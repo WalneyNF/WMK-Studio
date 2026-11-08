@@ -93,10 +93,29 @@ def load_bindings(path, document, screens):
             field_names.add(field["name"])
     return raw
 
-def export(source, bindings, target):
+def export(source, bindings, target, models=None):
     document=load_document(source)
     screen_ids=inspect(document)
     contract=load_bindings(bindings,document,screen_ids)
+    if models is not None:
+        model_data=json.loads(models.read_text(encoding="utf-8"))
+        if model_data.get("schemaVersion") != "wmk-data-studio/v1":
+            raise ValueError("Schema de modelos WMK Data Studio incompatível")
+        imported=model_data.get("dataModels")
+        if not isinstance(imported,list):raise ValueError("Lista de modelos inválida")
+        existing=contract.get("dataModels",[])
+        contract["dataModels"]=imported
+        try:
+            # Reaproveita a validacao dos IDs e tipos do contrato App Bridge.
+            load_bindings_from_models=contract
+            import tempfile
+            with tempfile.TemporaryDirectory() as folder:
+                temporary=Path(folder)/"bindings.json"
+                temporary.write_text(json.dumps(load_bindings_from_models,ensure_ascii=False),encoding="utf-8")
+                contract=load_bindings(temporary,document,screen_ids)
+        except ValueError:
+            contract["dataModels"]=existing
+            raise
     if not TEMPLATE.exists():
         raise ValueError("Template React ausente")
     if target.exists() and any(target.iterdir()):
@@ -132,9 +151,10 @@ def main():
     parser=argparse.ArgumentParser(description="WMK App Bridge: .wmk -> manifesto + React TypeScript")
     parser.add_argument("source",type=Path)
     parser.add_argument("--bindings",type=Path)
+    parser.add_argument("--models",type=Path,help="JSON exportado pelo WMK Data Studio")
     parser.add_argument("--out",required=True,type=Path)
     args=parser.parse_args()
-    try:export(args.source,args.bindings,args.out)
+    try:export(args.source,args.bindings,args.out,args.models)
     except (OSError,ValueError,KeyError,json.JSONDecodeError,zipfile.BadZipFile) as exc:
         print("BRIDGE_ERROR:",exc,file=sys.stderr)
         return 2

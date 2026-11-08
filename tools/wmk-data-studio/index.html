@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WMK Data Studio — SQLite</title>
+<style>
+:root{color-scheme:dark;--bg:#090f12;--sidebar:#101e23;--panel:#15262b;--panel2:#1b3235;--line:#335357;--green:#6cfbb7;--muted:#a8c7c0;--text:#effffa}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 Segoe UI,system-ui,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:16px 24px;background:#0e1a1f;border-bottom:1px solid var(--line)}
+.brand{font-size:20px;font-weight:750;color:var(--green)}.brand small{font-size:12px;color:var(--muted);font-weight:400;display:block}
+.layout{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:calc(100vh - 85px)}aside{background:var(--sidebar);padding:18px;border-right:1px solid var(--line)}
+h1{font-size:23px;color:var(--green);margin:0 0 12px}h2{font-size:17px;color:var(--green);margin:0 0 12px}h3{font-size:15px;margin:15px 0 9px}
+main{padding:22px;max-width:1250px;width:100%;overflow:hidden}
+button,input,select,textarea{font:inherit}button{background:#245d50;color:white;border:1px solid #388e78;border-radius:7px;padding:8px 12px;cursor:pointer}button:hover{background:#307d66}button:disabled{opacity:.5;cursor:not-allowed}
+input,select{color:white;background:#0b191d;border:1px solid #456463;border-radius:7px;padding:8px 10px;min-width:0}label{display:grid;gap:5px;color:var(--muted)}label input,label select{width:100%}
+fieldset{border:1px solid var(--line);border-radius:10px;margin:12px 0;padding:15px}legend{color:var(--green)}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.row>*{flex:0 0 auto}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:19px;margin-bottom:16px}
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:15px}.stack{display:grid;gap:12px}
+.entity{display:block;width:100%;background:none;border:1px solid transparent;text-align:left;color:var(--muted);margin:4px 0;padding:10px;border-radius:7px}
+.entity.active{border-color:#3eaf8d;background:#1e433d;color:var(--green)}
+.muted,small{color:var(--muted)}.status{margin:12px 0;color:var(--green);min-height:20px}.status.error{color:#ffb8a7}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{color:var(--green)}.tableWrap{overflow-x:auto;max-width:100%}.btn-sm{padding:4px 9px;font-size:12px;margin:0 3px}
+.primary{background:#1b7760;border-color:#48cf9f}.danger{background:#593b42;border-color:#97646b}
+form:not(.inline){display:grid;gap:11px}footer{padding:16px;color:var(--muted);font-size:12px}
+.pill{border-radius:30px;border:1px solid var(--line);padding:4px 9px;font-size:12px;color:var(--green)}
+@media(max-width:900px){.layout{grid-template-columns:1fr}aside{border-bottom:1px solid var(--line);border-right:0}.columns{grid-template-columns:1fr}header{flex-wrap:wrap}}
+</style></head><body>
+<header><div class="brand">WMK <span style="color:white">DATA STUDIO</span><small>Modelagem visual • SQLite local • Exportação para WMK App Bridge</small></div>
+<div class="row"><span class="pill">Laboratório 0.1</span><button id="btnExport" type="button">Exportar modelos JSON</button></div></header>
+<div class="layout">
+<aside><h2>Entidades</h2><p class="muted">Tabelas SQLite do projeto</p><div id="entities"></div>
+<fieldset><legend>Nova entidade</legend><form id="createEntity">
+<label>Nome técnico<input name="name" placeholder="clientes" pattern="[A-Za-z][A-Za-z0-9_]*" required></label>
+<label>Descrição<input name="label" placeholder="Cadastro de Clientes"></label>
+<button class="primary" type="submit">Criar tabela</button></form></fieldset>
+<p class="muted">O banco é gravado no disco, não no navegador.</p>
+</aside>
+<main>
+<h1>Modelador de Dados</h1><p>Crie entidades, defina campos e gerencie registros. Exporte o esquema para gerar formulários e APIs.</p>
+<div id="status" class="status" aria-live="polite"></div>
+<div id="empty" class="panel">Selecione uma entidade à esquerda ou crie a primeira tabela para começar.</div>
+<div id="workspace" hidden>
+<div class="panel"><div class="row" style="justify-content:space-between"><h2 id="entityName"></h2><span id="countFields" class="pill"></span></div>
+<div class="columns">
+<div><h3>Campos da entidade</h3><div class="tableWrap"><table><thead><tr><th>Nome</th><th>Tipo</th><th>Obrigatório</th></tr></thead><tbody id="fields"></tbody></table></div></div>
+<div><h3>Adicionar campo</h3><form id="addField">
+<label>Nome<input name="name" placeholder="nome" pattern="[A-Za-z][A-Za-z0-9_]*" required></label>
+<label>Tipo<select name="type"><option value="string">Texto</option><option value="email">E-mail</option><option value="number">Número / decimal</option><option value="integer">Inteiro</option><option value="boolean">Verdadeiro / falso</option><option value="date">Data</option></select></label>
+<label style="display:flex;gap:7px;align-items:center"><input name="required" type="checkbox" style="width:auto"> Obrigatório</label>
+<button type="submit">Adicionar ao SQLite</button></form></div>
+</div></div>
+<div class="panel"><div class="row" style="justify-content:space-between"><h2>Registros da tabela</h2><span id="rowCount" class="pill"></span></div>
+<div class="columns">
+<div><h3 id="formTitle">Novo registro</h3><form id="recordForm"><div id="recordFields" class="stack"></div><div class="row"><button class="primary" type="submit">Salvar</button><button type="button" id="cancelEdit">Cancelar</button></div></form></div>
+<div><h3>Dados gravados</h3><label>Pesquisar na lista<input id="search" placeholder="Filtrar registros"></label><div class="tableWrap"><table><thead id="headRecords"></thead><tbody id="records"></tbody></table></div></div>
+</div></div>
+</div>
+</main></div>
+<footer>WMK Studio — Walney Moreira Klein — walneyk@hotmail.com. Protótipo local sem autenticação; não expor na internet.</footer>
+<script>
+const TOKEN="__WMK_TOKEN__";
+let entities=[],current=null,records=[],editing=null;
+const $=id=>document.getElementById(id);
+const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+async function api(path,method='GET',data){
+ const headers={'X-WMK-Token':TOKEN};if(data!==undefined)headers['Content-Type']='application/json';
+ const response=await fetch('/api'+path,{method,headers,body:data!==undefined?JSON.stringify(data):undefined});
+ const payload=await response.json();if(!response.ok)throw Error(payload.error||'Erro HTTP '+response.status);return payload;
+}
+function message(text,isError=false){const el=$('status');el.textContent=text;el.classList.toggle('error',isError)}
+function issue(error){message(error instanceof Error?error.message:String(error),true)}
+function setupFormFields(){
+ const entity=entities.find(e=>e.id===current);if(!entity)return;
+ $('recordFields').replaceChildren();
+ entity.fields.forEach(f=>{
+  const label=document.createElement('label');
+  label.textContent=f.name+(f.required?' *':'');
+  const input=f.type==='boolean'?document.createElement('select'):document.createElement('input');
+  input.dataset.field=f.name;input.dataset.kind=f.type;input.required=f.required;
+  if(f.type==='boolean'){
+   [['','Selecione'],['true','Sim'],['false','Não']].forEach(([v,name])=>input.add(new Option(name,v)));
+  }else{
+   input.type=f.type==='email'?'email':f.type==='number'||f.type==='integer'?'number':f.type==='date'?'date':'text';
+   if(f.type==='number')input.step='any';if(f.type==='integer')input.step='1';
+  }
+  label.append(input);$('recordFields').append(label);
+ });
+}
+async function refreshSchemas(){
+ const result=await api('/schema');entities=result.entities;
+ $('entities').innerHTML=entities.map(e=>'<button type="button" class="entity '+(e.id===current?'active':'')+'" data-entity="'+esc(e.id)+'">'+esc(e.label)+' <small>('+esc(e.id)+')</small></button>').join('');
+ document.querySelectorAll('[data-entity]').forEach(btn=>btn.onclick=()=>selectEntity(btn.dataset.entity));
+ if(current&&entities.some(e=>e.id===current))await selectEntity(current,false);
+ else if(entities.length)await selectEntity(entities[0].id,false);
+ else {$('empty').hidden=false;$('workspace').hidden=true;}
+}
+async function selectEntity(id,rebuild=true){
+ current=id;editing=null;$('formTitle').textContent='Novo registro';
+ const entity=entities.find(e=>e.id===id);
+ if(!entity)return;
+ if(rebuild){await refreshSchemas();return;}
+ $('empty').hidden=true;$('workspace').hidden=false;$('entityName').textContent=entity.label+' ('+entity.id+')';
+ $('countFields').textContent=entity.fields.length+' campos';
+ $('fields').innerHTML='<tr><td>id</td><td>UUID (texto)</td><td>Sim</td></tr>'+entity.fields.map(f=>'<tr><td>'+esc(f.name)+'</td><td>'+esc(f.type)+'</td><td>'+(f.required?'Sim':'Não')+'</td></tr>').join('');
+ setupFormFields();$('search').value='';await loadRecords();
+}
+async function loadRecords(){const result=await api('/entities/'+encodeURIComponent(current)+'/records');records=result.rows;$('rowCount').textContent=records.length+' registro(s)';renderRows()}
+function renderRows(){
+ const q=$('search').value.toLocaleLowerCase('pt-BR');
+ const entity=entities.find(e=>e.id===current);const fields=entity?.fields||[];
+ const columns=['id',...fields.map(f=>f.name)];
+ $('headRecords').innerHTML='<tr>'+columns.map(n=>'<th>'+esc(n)+'</th>').join('')+'<th>Ações</th></tr>';
+ const filtered=records.filter(row=>Object.values(row).some(v=>String(v??'').toLocaleLowerCase('pt-BR').includes(q)));
+ $('records').innerHTML=filtered.map(row=>'<tr>'+columns.map(k=>'<td>'+esc(row[k])+'</td>').join('')+
+ '<td><button class="btn-sm" type="button" data-edit="'+esc(row.id)+'">Editar</button><button class="btn-sm danger" type="button" data-delete="'+esc(row.id)+'">Excluir</button></td></tr>').join('');
+ document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>editRow(b.dataset.edit));
+ document.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>deleteRow(b.dataset.delete));
+}
+function editRow(id){
+ const row=records.find(r=>r.id===id);if(!row)return;
+ editing=id;$('formTitle').textContent='Editar registro';
+ $('recordFields').querySelectorAll('[data-field]').forEach(input=>{
+  const val=row[input.dataset.field];input.value=val===null||val===undefined?'':input.dataset.kind==='boolean'?String(val):String(val);
+ });
+}
+function clearEdit(){editing=null;$('recordForm').reset();$('formTitle').textContent='Novo registro'}
+async function deleteRow(id){
+ if(!confirm('Excluir registro permanentemente?'))return;
+ try{await api('/entities/'+encodeURIComponent(current)+'/records/'+encodeURIComponent(id),'DELETE');clearEdit();await loadRecords();message('Registro excluído')}catch(e){issue(e)}
+}
+$('createEntity').onsubmit=async event=>{
+ event.preventDefault();const form=new FormData(event.target);
+ try{await api('/entities','POST',{name:form.get('name'),label:form.get('label')});current=String(form.get('name'));event.target.reset();await refreshSchemas();message('Tabela criada no SQLite')}catch(e){issue(e)}
+};
+$('addField').onsubmit=async event=>{
+ event.preventDefault();const form=new FormData(event.target);
+ try{await api('/entities/'+encodeURIComponent(current)+'/fields','POST',{name:form.get('name'),type:form.get('type'),required:form.has('required')});
+ event.target.reset();await refreshSchemas();message('Coluna adicionada ao banco')}catch(e){issue(e)}
+};
+$('recordForm').onsubmit=async event=>{
+ event.preventDefault();
+ const data={};$('recordFields').querySelectorAll('[data-field]').forEach(input=>{
+  const value=input.value;
+  data[input.dataset.field]=value===''?null:input.dataset.kind==='boolean'?value==='true':input.dataset.kind==='number'?Number(value):input.dataset.kind==='integer'?Number(value):value;
+ });
+ try{const path='/entities/'+encodeURIComponent(current)+'/records'+(editing?'/'+encodeURIComponent(editing):'');
+ await api(path,editing?'PUT':'POST',data);clearEdit();await loadRecords();message('Registro salvo no SQLite')}catch(e){issue(e)}
+};
+$('cancelEdit').onclick=clearEdit;
+$('search').oninput=renderRows;
+$('btnExport').onclick=async()=>{
+ try{const data=await api('/export');const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='wmk-data-models.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);
+ message('Modelo exportado em JSON');}catch(e){issue(e)}
+};
+refreshSchemas().catch(issue);
+</script></body></html>
