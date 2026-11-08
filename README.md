@@ -138,6 +138,8 @@ O curso não instala programas nem executa ações externas: é material educaci
 | Material | Para quem serve |
 |---|---|
 | **[Central de manuais](manuais/index.html)** | Índice geral e navegação por todos os guias |
+| **[Academia — Aula 1: Frames e cores](manuais/academia-aula-01-frame.html)** | Criar o primeiro cartão e entender propriedades |
+| **[Academia — Aula 2: textos e camadas](manuais/academia-aula-02-textos.html)** | Tipografia, posicionamento e botão visual |
 | **[Guia dos 8 templates nativos](manuais/guia-templates-iniciais.html)** | Aprenda com modelos prontos do editor |
 | **[Curso interativo completo](manuais/curso-wmk-studio.html)** | Formação prática em 8 módulos, com exercícios e avaliações |
 | **[Manual completo de usuários](manuais/manual-completo-usuarios-wmk-studio.html)** | Consulta detalhada aos recursos e exercícios |
