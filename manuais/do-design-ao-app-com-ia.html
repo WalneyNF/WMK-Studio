@@ -1,0 +1,47 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Do Design ao App com IA — WMK Studio</title><style>body{max-width:970px;margin:auto;padding:28px;font:16px/1.7 system-ui;background:#0B0217;color:#F5E9FF}h1,h2,h3,a{color:#E6B3FF}header,section{border:1px solid #654085;background:#1B0736;border-radius:14px;padding:20px;margin:16px 0}header{display:flex;align-items:center;gap:20px}header img{width:100px}table{border-collapse:collapse;width:100%}td,th{border:1px solid #654085;text-align:left;padding:10px}th{background:#391456}code,pre{color:#e8c8ff}pre{background:#0B0217;padding:16px;white-space:pre-wrap;border-radius:9px}li{margin:7px 0}small{color:#B79CD9}@media(max-width:600px){body{padding:10px}header{display:block}}</style></head><body><header><img src="../wmk-logo.png" alt="Logo WMK Studio"><div><h1>Do Design ao Aplicativo com IA</h1><p>Como aproveitar o Dev Mode, Code Connect e MCP do WMK Studio e gerar aplicações conforme uma stack escolhida</p><small>Academia WMK Studio • Walney Moreira Klein — walneyk@hotmail.com</small></div></header>
+<p><a href="index.html">Índice de manuais</a> · <a href="raio-x-completo-wmk-studio.html">Raio X</a> · <a href="arquitetura-central-rad-wmk.html">Central RAD</a></p>
+<section><h2>1. A resposta objetiva</h2><p>O WMK Studio <strong>não é apenas um desenhador de imagens</strong>: possui editor visual, componentes, Auto Layout, Dev Mode, inspetor, gerador de trechos de código e Code Connect. <strong>Não é ainda um gerador integrado de aplicativos comerciais completos.</strong> O backend, o banco, a segurança, as rotas e as regras de negócio exigem desenvolvimento adicional.</p></section>
+<section><h2>2. Recursos conferidos no repositório</h2><table><tr><th>Capacidade</th><th>Localização</th><th>Estado</th></tr><tr><td>CSS, HTML e estruturas de componentes</td><td>crates/engine/src/dev/codegen.rs; component_codegen.rs</td><td>Implementação no código; qualidade de produção não certificada</td></tr><tr><td>React, Vue, Leptos, Flutter, SwiftUI, Compose, ArkUI</td><td>docs/dev-mode-parity.md; engine/dev</td><td>Geradores descritos e implementados; requer teste real por stack</td></tr><tr><td>Mapeamento de componentes visuais para código</td><td>crates/engine/src/dev/code_connect.rs</td><td>Code Connect implementado no código</td></tr><tr><td>Dev Mode e Inspecionar</td><td>crates/ui-egui/src/panels/dev_mode.rs</td><td>Painel de inspeção implementado</td></tr><tr><td>Integração automatizada</td><td>crates/mcp; apps/figcraft-cli; docs/mcp.md</td><td>Código existente; CLI não estava compilada nesta máquina na auditoria</td></tr><tr><td>Ollama/Groq, gerador full-stack</td><td>Futura camada RAD</td><td>Não integrados ao app atual</td></tr></table></section>
+<section><h2>3. Fluxo ideal da WMK Software Factory</h2><pre>Escolher template + suas classes visuais + tema
+  ↓
+Editar tela .wmk (componentes, propriedades e Auto Layout)
+  ↓
+Mapear componentes visuais para componentes reais do framework
+  ↓
+Escolher stack e restrições do projeto
+  ↓
+Extrair árvore estruturada por MCP/Dev Mode
+  ↓
+IA gera plano de implementação e código
+  ↓
+Gerador determinístico cria esqueleto + componentes aprovados
+  ↓
+IA implementa rotas, validação, serviços, banco e testes
+  ↓
+Build/testes reais → prévia → revisão → entrega do projeto</pre>
+<p>A etapa visual não determina sozinha tabelas de dados, permissões de usuário, regras comerciais nem APIs: essas informações entram em um <strong>contrato funcional</strong> adicional.</p></section>
+<section><h2>4. Contratos para gerar um projeto de forma repetível</h2><pre>{
+ "schemaVersion": "wmk-app-project-v1",
+ "template": "wmk-cadastro-v2",
+ "theme": "wmk-dark",
+ "target": {
+   "ui": "react",
+   "language": "typescript",
+   "css": "tailwind",
+   "api": "node-fastify",
+   "database": "sqlite"
+ },
+ "entity": "clientes",
+ "fields": [
+   {"name": "id", "type": "uuid", "required": true},
+   {"name": "nome", "type": "string", "required": true},
+   {"name": "email", "type": "email"}
+ ],
+ "features": ["list", "search", "create", "edit", "delete"]
+}</pre><p>O contrato é uma <strong>proposta nova</strong>, não um arquivo suportado pelo programa atual. O sistema precisa validar referências de classes, schema, componentes, comandos e versão do template.</p></section>
+<section><h2>5. Por que usar Code Connect?</h2><p>Se o desenho contém uma instância visual de <code>WMKTextBox</code>, a fábrica não precisa convertê-la em HTML genérico. Ela pode gerar um <code>&lt;WMKTextBox ... /&gt;</code> real de uma biblioteca React, desde que o Code Connect tenha mapeamento para o componente e suas propriedades. Esse é o caminho para manter o estilo e a lógica da classe-base em todos os sistemas.</p><p>Os comportamentos devem ser especificados separadamente: <code>onSearch</code>, <code>onSelect</code>, <code>required</code>, <code>dataField</code>, <code>mask</code>, validação e permissões. Um botão desenhado não contém automaticamente código de gravação.</p></section>
+<section><h2>6. Presets de stack</h2><table><tr><th>Preset proposto</th><th>Tecnologias</th><th>Objetivo</th></tr><tr><td>WMK Web Simples</td><td>HTML, CSS, JavaScript</td><td>Landing pages e protótipos</td></tr><tr><td>WMK Sistemas</td><td>React, TypeScript, Fastify, SQLite</td><td>CRUDs e aplicações comerciais pequenas</td></tr><tr><td>WMK SaaS</td><td>Next.js, TypeScript, PostgreSQL</td><td>Aplicações web multiusuário, com projeto de autenticação</td></tr><tr><td>WMK Mobile</td><td>Flutter, Dart, API Node</td><td>Aplicativos móveis (requer SDK/build específico)</td></tr></table><p>Não afirmar suporte operacional a uma stack sem testes de geração e build dela.</p></section>
+<section><h2>7. Plano de implementação por fatias</h2><ol><li><strong>P0 — Inspeção:</strong> compilar figcraft-cli, usar MCP para extrair uma tela e gerar código existente; registrar diferenças visuais.</li><li><strong>P1 — Code Connect WMK:</strong> associar WMKButton, WMKLabel, WMKTextBox a componentes React reais. Criar testes de mapeamento.</li><li><strong>P2 — Template CRUD:</strong> frmConsulta + frmCadastro, entidade Cliente e contrato de dados validado.</li><li><strong>P3 — App gerado sem IA:</strong> gerar esqueleto React+Fastify+SQLite por templates determinísticos; testar build, persistência e operações CRUD.</li><li><strong>P4 — IA local:</strong> Ollama recebe contrato de design e regras; gera plano e código somente em workspace isolado, sujeito a validação.</li><li><strong>P5 — Provedores:</strong> Groq e outros com timeout, rate limit, permissões e controle de custo.</li><li><strong>P6 — Novas stacks:</strong> validar React Native/Flutter e outros alvos um de cada vez.</li></ol></section>
+<section><h2>8. Cuidados de segurança e engenharia</h2><ul><li>Não executar comandos shell fornecidos livremente por modelos; allowlist e isolamento por workspace.</li><li>Credenciais em variáveis de ambiente/gerenciador seguro, nunca incorporadas ao repositório de design.</li><li>Autenticação, autorização, validação server-side, migrações, logs e testes são exigências distintas da aparência visual.</li><li>Antes de declarar um aplicativo concluído: testes unitários, integração da API, persistência, build, análise de dependências e revisão visual.</li><li>Preservar bibliotecas base, atualizar por versão e respeitar overrides.</li></ul></section>
+<section><h2>9. Ferramentas do mercado que demonstram viabilidade</h2><p>Figma Code Connect documenta vínculo entre design e código de componentes. Builder.io e Locofy oferecem fluxos de design-para-código e integração de bibliotecas existentes. São referências para estudar padrões de arquitetura, não dependências obrigatórias do WMK Studio.</p><p>Referências: <a href="https://developers.figma.com/docs/code-connect/">Figma Code Connect</a>, <a href="https://www.builder.io/platform/code">Builder Code</a>, <a href="https://www.locofy.ai/docs/">Locofy</a>.</p></section>
+<footer>WMK Studio — Walney Moreira Klein — walneyk@hotmail.com. Código-base: FigCraft / ArtCraft Team. Documento de arquitetura e estudo, não declaração de funcionalidades IA implementadas.</footer></body></html>
