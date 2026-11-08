@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Relatório técnico de investigação WMK Studio: documento .wmk, componentes, App Bridge, Behavior Inspector, presets, arquitetura e roadmap.">
+<title>Relatório Técnico — WMK Studio: do design ao aplicativo</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0615;--panel:#1c1030;--panel2:#281641;--line:#69448b;--text:#f3eafe;--muted:#c7b1d9;--accent:#e0b3ff;--ok:#8be0c7;--warn:#ffd78f}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);font:16px/1.65 "Segoe UI",system-ui,sans-serif;color:var(--text)}
+main{max-width:1190px;margin:0 auto;padding:24px 22px 80px}.hero{background:linear-gradient(115deg,#291342,#130b24 75%);border:1px solid var(--line);border-radius:19px;padding:30px}.hero-top{display:flex;gap:22px;align-items:center}.hero img{max-width:100px;max-height:100px;object-fit:contain}.eyebrow{color:var(--accent);font-size:13px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase}.hero h1{font-size:clamp(26px,4vw,41px);line-height:1.18;margin:8px 0}.hero p{margin:10px 0 0;color:var(--muted)}.meta{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}.tag{border:1px solid #8f60b5;border-radius:40px;padding:4px 11px;color:var(--accent);font-size:13px}
+nav{margin:22px 0;display:flex;flex-wrap:wrap;gap:9px}nav a{border:1px solid var(--line);background:#211337;padding:7px 12px;border-radius:7px;text-decoration:none;font-size:14px}
+a{color:var(--accent)}a:hover{text-decoration:underline}section{padding:24px;border:1px solid var(--line);border-radius:14px;background:var(--panel);margin:19px 0}section h2{font-size:22px;margin:0 0 13px;color:var(--accent)}h3{font-size:17px;color:#f0d7ff;margin-top:22px}p,li{color:#e9def2}strong{color:#fff}.muted,small{color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}.stat{background:var(--panel2);border:1px solid var(--line);padding:14px;border-radius:12px}.stat strong{font-size:27px;display:block}.stat span{font-size:12px;color:var(--muted)}table{width:100%;border-collapse:collapse;font-size:14px;margin:14px 0}th,td{border:1px solid #684b81;text-align:left;padding:9px;vertical-align:top}th{background:#321e4a;color:#f6e2ff}td{background:#231437}code,pre{color:#e3bdff}code{font-family:Consolas,monospace}pre{white-space:pre;overflow:auto;padding:16px;background:#090513;border:1px solid #483166;border-radius:11px;font:13px/1.6 Consolas,monospace}.hint{background:#251634;border-left:4px solid #bd8aff;padding:12px 16px;border-radius:5px}.note{border-left-color:#ffc980}.good{color:var(--ok)}.pending{color:var(--warn)}ol,ul{padding-left:24px}.split{display:grid;grid-template-columns:1fr 1fr;gap:14px}.panel{padding:17px;border-radius:10px;background:var(--panel2);border:1px solid var(--line)}.panel h3{margin:0 0 8px}.flow{text-align:center;display:grid;gap:8px;max-width:640px;margin:18px auto}.flow div{padding:13px;background:var(--panel2);border:1px solid var(--line);border-radius:9px}.flow .arrow{border:none;background:none;padding:0;color:#c8a1e9;font-size:22px}.foot{margin-top:36px;border-top:1px solid var(--line);padding-top:20px;color:var(--muted)}.print{float:right;background:#3b2054;border:1px solid var(--line);border-radius:8px;color:white;padding:8px 14px;cursor:pointer;font:inherit}
+@media(max-width:700px){main{padding:12px}.hero{padding:20px}.stats{grid-template-columns:repeat(2,1fr)}.split{grid-template-columns:1fr}section{padding:17px}.hero-top{align-items:flex-start}.hero img{width:66px}table{font-size:12px}}
+@media print{html{color-scheme:light}body{background:white;color:#111}section,.hero,.panel,.stat{background:white;color:#111;border-color:#aaa;break-inside:avoid}p,li,td,th,strong,h1,h2,h3{color:#111!important}pre{white-space:pre-wrap;color:#111;background:#f6f6f6}nav,.print{display:none}a{color:#333}.foot{color:#222}}
+</style>
+</head>
+<body><main>
+<header class="hero">
+ <button class="print" onclick="window.print()">Imprimir / salvar PDF</button>
+ <div class="hero-top"><img src="../wmk-logo.png" alt="WMK Studio"><div>
+  <div class="eyebrow">Relatório de investigação e plano de engenharia</div>
+  <h1>WMK Studio: transformar design em aplicativos reais</h1>
+  <p>Inventário das descobertas, limitações verificadas, arquitetura de classes/presets, WMK App Bridge e proposta para Behavior Inspector e exportação por stack.</p>
+ </div></div>
+ <div class="meta"><span class="tag">08/11/2026</span><span class="tag">WMK Studio / FigCraft</span><span class="tag">Relatório técnico 1.0</span><span class="tag">Estado do checkout: c35d02d</span></div>
+ <p>Responsável pelo fork: <strong>Walney Moreira Klein</strong> — <a href="mailto:walneyk@hotmail.com">walneyk@hotmail.com</a>. Respeitam-se os créditos e licenças do projeto original FigCraft.</p>
+</header>
+<nav aria-label="Seções do relatório">
+<a href="#resumo">Resumo</a><a href="#evidencias">Evidências</a><a href="#formato">Formato .wmk</a><a href="#componentes">Componentes</a><a href="#bridge">App Bridge</a><a href="#arquitetura">Arquitetura</a><a href="#inspetor">Behavior Inspector</a><a href="#presets">Presets</a><a href="#roadmap">Roadmap</a><a href="#testes">Testes</a><a href="#fontes">Referências</a>
+</nav>
+
+<section id="resumo">
+<h2>1. Resumo executivo</h2>
+<p><strong>Conclusão:</strong> é tecnicamente viável desenvolver um fluxo <em>desenhar no WMK Studio → configurar comportamento e dados → exportar React/TypeScript → compilar → publicar</em>. A viabilidade de extração de dados e geração de projeto compilável foi demonstrada. A geração automática de aplicações completas, a herança executável de métodos e a fidelidade visual ainda não foram demonstradas.</p>
+<div class="stats">
+<div class="stat"><strong>349</strong><span>nós no documento de laboratório</span></div>
+<div class="stat"><strong>3</strong><span>telas principais (Frames)</span></div>
+<div class="stat"><strong>5</strong><span>bindings de comportamento exportados</span></div>
+<div class="stat"><strong>33</strong><span>módulos no build Vite da ponte</span></div>
+</div>
+<p class="hint"><strong>Decisão recomendada:</strong> preservar o arquivo <code>.wmk</code> como documento visual e criar uma camada RAD versionada, independente de linguagem, com <strong>classes, componentes, eventos, ações, entidades, presets e contratos de exportação</strong>. Exportadores específicos farão a conversão para React/TypeScript, Laravel, CodeIgniter ou outras stacks.</p>
+</section>
+
+<section id="evidencias">
+<h2>2. O que já está comprovado e o que não está</h2>
+<table><thead><tr><th>Capacidade</th><th>Estado</th><th>Fundamento</th></tr></thead><tbody>
+<tr><td>Abrir/ler um documento compatível com a amostra .wmk</td><td class="good">Testado</td><td>ZIP contendo <code>document.json</code>; laboratório Ridgeline</td></tr>
+<tr><td>Recuperar nomes, árvores, tamanhos, textos, estilos e vínculos de instâncias</td><td class="good">Testado na amostra</td><td>349 nós analisados, três Frames principais</td></tr>
+<tr><td>Componentes, instâncias, variantes e bibliotecas visuais</td><td class="good">Implementados na engine</td><td><code>docs/components-parity.md</code> e comandos da engine</td></tr>
+<tr><td>Gerar React + TypeScript + Vite</td><td class="good">Build aprovado</td><td>App Bridge: <code>tsc --noEmit</code> e Vite, 33 módulos</td></tr>
+<tr><td>Definir navegação por nodeId e dados por manifesto</td><td class="good">Contrato implementado</td><td><code>bindings.json</code> → <code>wmk.manifest.json</code>; testes de validação</td></tr>
+<tr><td>Fidelidade visual exata em navegador</td><td class="pending">Não validada</td><td>Vetores/auto layout/efeitos parcialmente convertidos</td></tr>
+<tr><td>Teste real end-to-end dos cliques no navegador</td><td class="pending">Pendente</td><td>Compilação não demonstra o comportamento visual/runtime</td></tr>
+<tr><td>Herança executável de métodos/eventos VFP</td><td class="pending">Ainda não implementada</td><td>Instância visual não equivale a classe com <code>super</code></td></tr>
+<tr><td>Backend, API, SQLite e autenticação exportados</td><td class="pending">Ainda não implementados</td><td>CRUD atual é demonstração local com <code>localStorage</code></td></tr>
+<tr><td>Menu nativo do editor para exportar aplicação</td><td class="pending">Ainda não implementado</td><td>Exportador atual funciona como ferramenta externa CLI</td></tr>
+</tbody></table>
+</section>
+
+<section id="formato">
+<h2>3. O que descobrimos no formato de documento</h2>
+<p>A amostra real <code>examples/ridgeline-app.figcraft</code> foi copiada para <code>ridgeline-laboratorio.wmk</code>. A alteração foi apenas no nome externo do arquivo; o campo interno <code>format</code> continuou como <code>figcraft</code>, versão 1. Portanto, não se deve presumir que todos os arquivos .wmk possíveis sejam idênticos a essa amostra.</p>
+<pre>ridgeline-laboratorio.wmk (container ZIP)
+├── document.json
+└── thumbnail.png
+
+document.json
+├── format / version / name
+├── pages
+├── nodes (árvore de componentes e camadas)
+├── styles
+├── variables (coleções, modos, tokens)
+├── current_page
+└── metadados adicionais</pre>
+<p>Na amostra identificamos <strong>122 frames, 79 nós de texto, 78 nós vetoriais, 24 instâncias, oito componentes principais e três conjuntos de variantes</strong>, além de outras formas e uma seção de componentes. As telas principais do exemplo são <em>Home Light</em>, <em>Home Dark</em> e <em>Trail Light</em>.</p>
+<p><strong>Consequência:</strong> o documento tem informações estruturais superiores às de uma simples imagem PNG. Podemos reconstruir a hierarquia, identificar elementos e associar comportamento por <code>nodeId</code>. Entretanto, os IDs são estáveis apenas dentro da versão correspondente do documento: precisamos diagnosticar e remapear referências após exclusões ou recriações de nós.</p>
+</section>
+
+<section id="componentes">
+<h2>4. Componentes existentes e o paralelo com VFP/Delphi/C#</h2>
+<p>A engine possui tipos fundamentais como Page, Frame, Group, Section, Rectangle, Ellipse, Polygon, Star, Line, Vector, Text, BooleanOp, Component, ComponentSet, Instance e Slice, conforme <code>crates/doc/src/node.rs</code>. Eles não devem ser confundidos com widgets funcionais prontos, como um TextBox com persistência.</p>
+<table><tr><th>Conceito</th><th>WMK atual</th><th>Extensão RAD recomendada</th></tr>
+<tr><td>Form SCX / Form Delphi</td><td>Frame e componente visual</td><td><code>WMKForm</code> com slots, eventos, entidade e rotinas</td></tr>
+<tr><td>Biblioteca VCX / palette</td><td>Bibliotecas de componentes e instâncias</td><td>Registry de classes e controles com versão</td></tr>
+<tr><td>Classe derivada</td><td>Instâncias, variantes e overrides visuais</td><td>Herança semântica de métodos e propriedades</td></tr>
+<tr><td>Click / Valid / LostFocus</td><td>Interações de prototipagem e código associado</td><td>Contratos onClick, onBlur, onSubmit e ações executáveis</td></tr>
+<tr><td>PRG / Service</td><td>Não há equivalente RAD integrado para negócio</td><td>Rotinas versionadas e adaptadores por stack</td></tr>
+<tr><td>Gerar aplicativo</td><td>Dev Mode/codegen parcial + App Bridge CLI</td><td>Build & Export integrado por preset</td></tr>
+</table>
+<h3>Recomendação de arquitetura de herança</h3>
+<p>Usar <strong>herança simples de classe + composição/slots</strong> para componentes internos. Separar estado herdado de overrides, permitir <em>herdar</em>, <em>estender</em> e <em>sobrescrever</em>, e manter um grafo de dependências para propagar alterações de classes-base.</p>
+<pre>WMKFormBase
+  └── WMKFormCadastro
+        ├── frmCadClientes
+        ├── frmCadProdutos
+        └── frmCadFornecedores
+
+WMKButtonBase
+  ├── WMKButtonSalvar  → crud.save
+  └── WMKButtonBuscar  → crud.search</pre>
+<p>Na exportação React, essa semântica pode ser traduzida em composição, hooks e services; não é necessário reproduzir classes visuais herdadas como componentes React de classe.</p>
+</section>
+
+<section id="bridge">
+<h2>5. O que implementamos: WMK App Bridge v0.1</h2>
+<p><code>tools/wmk-app-bridge/export.py</code> é uma ferramenta CLI independente. Recebe o documento e um arquivo opcional de vínculos, valida referências e produz código React/TypeScript e um manifesto portável. O arquivo de design original não é alterado.</p>
+<div class="flow">
+<div>Arquivo <strong>.wmk</strong><br><small>Layout, camadas e componentes</small></div><div class="arrow">↓ +</div>
+<div><strong>bindings.json</strong><br><small>Semântica, nodeId, role, action, dataModels</small></div><div class="arrow">↓</div>
+<div><strong>export.py</strong><br><small>Parser, validadores, IDs, telas e contratos</small></div><div class="arrow">↓</div>
+<div><strong>wmk.manifest.json</strong><br><small>Contrato independente do framework</small></div><div class="arrow">↓</div>
+<div><strong>React + TypeScript + Vite</strong><br><small>Aplicação exportada e compilável</small></div>
+</div>
+<h3>Exemplo de binding testado</h3>
+<pre>{
+  "nodeId": 104,
+  "role": "button",
+  "action": { "type": "screen.navigate", "screenId": 178 }
+}</pre>
+<p>O validador exige que o <code>nodeId</code> exista, que a ação pertença às ações permitidas e que o destino seja uma tela principal. A versão atual reconhece <code>input</code> e <code>button</code> e a ação <code>screen.navigate</code>. O contrato de dados gera um CRUD <strong>demonstrativo local</strong> de inclusão, busca e exclusão; não há backend nem edição completa.</p>
+<p>O caso de teste passou, e seis cenários inválidos foram rejeitados: nó inexistente, destino inválido, ação não permitida, versão incompatível, tipo de campo inválido e binding duplicado. O projeto gerado passou no TypeScript e build Vite.</p>
+</section>
+
+<section id="arquitetura">
+<h2>6. Arquitetura alvo: duas pontas, um contrato</h2>
+<p><strong>Princípio:</strong> o documento visual deve representar <em>como a aplicação parece</em>; os contratos RAD representam <em>o que os componentes significam e fazem</em>; os adaptadores representam <em>como cada linguagem implementa</em>. Isso evita embutir código de framework dentro do editor.</p>
+<pre>projeto-wmk/
+├── design/
+│   └── sistema.wmk
+├── rad/
+│   ├── project.wmkapp.json
+│   ├── bindings.json
+│   ├── classes.json
+│   ├── components.json
+│   ├── entities.json
+│   └── presets/
+│       └── cadastro-clientes.json
+├── behaviors/
+│   └── rotinas.ts         # opcional: implementação por stack
+└── generated/             # não alterar à mão como fonte principal
+    ├── react/
+    └── laravel/</pre>
+<p>O <code>wmkapp.json</code> deve pinçar versões da biblioteca visual, dos presets, do schema, dos adaptadores de exportação e do tema. Referências por nodeId podem ser complementadas por IDs semânticos persistentes no registry RAD.</p>
+<div class="split">
+<div class="panel"><h3>Responsabilidade do WMK Studio</h3><p>Designer, classes, variantes, tokens, propriedades, eventos, vínculos com dados, biblioteca de presets, validação e revisão dos contratos.</p></div>
+<div class="panel"><h3>Responsabilidade do exportador</h3><p>Resolver classes e overrides, mapear Code Connect, gerar componentes e serviços por stack, executar build, testes e empacotar o projeto.</p></div>
+</div>
+<h3>Stacks inicialmente previstas</h3>
+<table><tr><th>Stack</th><th>Destino</th><th>Estratégia</th></tr>
+<tr><td>React + TypeScript + Vite</td><td>Frontend web</td><td>Primeiro adaptador, já em laboratório</td></tr>
+<tr><td>Fastify + SQLite</td><td>Backend para CRUD</td><td>Próxima prova de funcionalidade persistente</td></tr>
+<tr><td>PHP + Laravel</td><td>Aplicações comerciais</td><td>Segundo adaptador após contratos estáveis</td></tr>
+<tr><td>PHP + CodeIgniter</td><td>Aplicações PHP leves</td><td>Adaptador posterior, não alegar suporte atual</td></tr>
+</table>
+</section>
+
+<section id="inspetor">
+<h2>7. Proposta: WMK Behavior Inspector</h2>
+<p>Adicionar uma aba ou seção ao inspetor de propriedades para o componente selecionado, preservando a experiência visual semelhante ao Visual FoxPro e ao Object Inspector do Delphi. <strong>A tela descrita abaixo ainda não está integrada ao executável.</strong></p>
+<div class="panel">
+<h3>Exemplo: Propriedades — cmdPesquisar</h3>
+<table><tr><th>Campo</th><th>Exemplo</th><th>Função</th></tr>
+<tr><td>Name</td><td>cmdPesquisar</td><td>Identidade estável do controle</td></tr>
+<tr><td>Class / BaseClass</td><td>WMKButtonPesquisar / WMKButtonBase</td><td>Referência de classes e herança</td></tr>
+<tr><td>Caption</td><td>Pesquisar</td><td>Propriedade visual</td></tr>
+<tr><td>Event</td><td>onClick</td><td>Evento capturado</td></tr>
+<tr><td>Action</td><td>clientes.pesquisar</td><td>Ação declarativa do catálogo</td></tr>
+<tr><td>Target</td><td>frmConsultaClientes</td><td>Destino quando aplicável</td></tr>
+<tr><td>DataField</td><td>clientes.nome</td><td>Ligação com esquema da entidade</td></tr>
+<tr><td>Method policy</td><td>inherit / extend / override</td><td>Estratégia para rotina herdada</td></tr></table>
+</div>
+<h3>Fluxo do usuário</h3>
+<ol>
+<li>Selecionar um componente real na árvore do documento.</li>
+<li>Abrir a seção <strong>Comportamento</strong> e escolher o papel (campo, botão, grid, formulário).</li>
+<li>Informar a ação, o alvo e o vínculo de dados, com autocomplete do registry.</li>
+<li>Validar imediatamente o contrato: ID válido, ação conhecida, destino existente, classe compatível.</li>
+<li>Salvar as alterações em <code>bindings.json</code>, com controle de versão e referência ao arquivo .wmk.</li>
+<li>Acionar <strong>Exportar aplicativo → React/TypeScript</strong> e revisar o relatório do build.</li>
+</ol>
+<p>A experiência deve permitir configurar tudo <em>sem escrever JSON</em>, mas oferecer modo avançado para inspeção, diff e edição do contrato.</p>
+</section>
+
+<section id="presets">
+<h2>8. Presets: a base para produtividade e IA</h2>
+<p>Preset não é só template visual. Ele deve trazer composição, tokens, controles, esquema de dados, ações, restrições e versão do contrato. É a evolução do conceito de uma classe-base <code>frmCadastro</code> do VFP.</p>
+<pre>WMK Comercial / Preset Cadastro v1
+  ├── WMKFormCadastro
+  │    ├── WMKInput / WMKSelect
+  │    ├── WMKDataGrid
+  │    └── Barra de ações
+  │         ├── Novo    → crud.new
+  │         ├── Salvar  → crud.save
+  │         ├── Excluir → crud.delete
+  │         └── Buscar  → crud.search
+  ├── Entidade e validação
+  ├── Tema / estilos de biblioteca
+  └── Exportação alvo: React/TS + Fastify + SQLite</pre>
+<p>Foi criado no fork o contrato experimental <code>wmk-rad-presets/examples/crud-clientes-v1.json</code>, acompanhado de um registro de componentes e de testes estruturais. <strong>Esse preset ainda não é interpretado nativamente pela interface do WMK Studio.</strong></p>
+<h3>Uso futuro da IA</h3>
+<p>A solicitação “Crie um CRUD de Clientes utilizando o preset X” deverá produzir um <strong>plano de alterações estruturadas</strong> validado por um schema. A IA seleciona componentes existentes, define entidades/campos e sugere regras, mas não altera classes-base aprovadas nem executa shell arbitrário. O motor determinístico monta o projeto e os testes comprovam seu funcionamento.</p>
+</section>
+
+<section id="roadmap">
+<h2>9. Plano de execução recomendado</h2>
+<table><thead><tr><th>Etapa</th><th>Entrega concreta</th><th>Critério de aceitação</th><th>Estado</th></tr></thead><tbody>
+<tr><td>0 — Extração</td><td>Ler .wmk, inspecionar camadas, frames e componentes</td><td>Amostra com 349 nós e três telas</td><td class="good">Concluída no laboratório</td></tr>
+<tr><td>1 — Contratos</td><td><code>bindings.json</code>, manifesto, validador e exportador React</td><td>Build passou; seis entradas inválidas rejeitadas</td><td class="good">Concluída no laboratório</td></tr>
+<tr><td>2 — Testes runtime</td><td>Automatizar navegação, input e dados no browser</td><td>Playwright comprova comportamentos e detecta falhas</td><td class="pending">Pendente</td></tr>
+<tr><td>3 — Inspector nativo</td><td>UI para propriedades de comportamento</td><td>Selecionar nó, editar, salvar/reabrir bindings</td><td class="pending">Pendente</td></tr>
+<tr><td>4 — Fidelidade</td><td>SVG nativo, tokens, Auto Layout e Code Connect</td><td>Comparar screenshots do original e exportado</td><td class="pending">Pendente</td></tr>
+<tr><td>5 — RAD Classes</td><td>Registry, herança semântica, overrides, métodos</td><td>Alteração na classe-base propaga às derivadas sem quebrar overrides</td><td class="pending">Pendente</td></tr>
+<tr><td>6 — CRUD full-stack</td><td>API Fastify, SQLite, migrações e testes</td><td>Criar, listar, editar, excluir; persistir após reiniciar</td><td class="pending">Pendente</td></tr>
+<tr><td>7 — Presets e IA</td><td>Catálogo gerenciável, Ollama/Groq e exportação por stack</td><td>IA gera por preset; schema, testes e segurança obrigatórios</td><td class="pending">Pendente</td></tr>
+</tbody></table>
+<p class="hint note"><strong>Ordem mais segura:</strong> comprovar o runtime do que foi gerado → implementar painel Behavior → corrigir fidelidade → adicionar herança e persistência. Evitar desenvolver muitos frameworks simultaneamente antes de estabilizar o contrato.</p>
+</section>
+
+<section id="testes">
+<h2>10. Estratégia de testes e segurança</h2>
+<h3>Testes imediatos</h3>
+<ol>
+<li><strong>Unitário:</strong> parser de .wmk, schema, tipos, unicidade e resolução de nodeIds.</li>
+<li><strong>Integração:</strong> exportar um .wmk e comparar manifesto/telas com o documento-fonte.</li>
+<li><strong>Build:</strong> executar TypeScript e Vite após cada mudança no exportador.</li>
+<li><strong>Browser:</strong> Playwright para navegação, input, eventos e CRUD local, incluindo recarregamento da página.</li>
+<li><strong>Visual:</strong> comparação de screenshots com tolerâncias explícitas e relatórios de diferenças.</li>
+<li><strong>Backend:</strong> integrações Fastify/SQLite, migrações, autenticação, autorização e validação server-side quando implementados.</li>
+</ol>
+<h3>Regras de segurança</h3>
+<ul>
+<li>Não executar scripts ou comandos arbitrários provenientes de modelos de IA ou de arquivos de design.</li>
+<li>Usar allowlist de ações e validação de schema; nunca confiar em <code>nodeId</code> ou nomes fornecidos sem verificação.</li>
+<li>Limitar tamanho de documentos e recursos descompactados; proibir extração de caminhos ZIP não autorizados.</li>
+<li>Manter credenciais fora dos projetos exportados; usar variáveis de ambiente e arquivos de exemplo.</li>
+<li>Fazer backup do projeto-fonte e não sobrescrever pastas de destino não vazias.</li>
+<li>Versionar contratos e bibliotecas; detectar incompatibilidades antes de atualizar classes ou presets.</li>
+</ul>
+</section>
+
+<section id="fontes">
+<h2>11. Arquivos de referência no fork</h2>
+<ul>
+<li><a href="../tools/wmk-app-bridge/README.md"><code>tools/wmk-app-bridge/README.md</code></a> — como executar, arquitetura e limitações.</li>
+<li><a href="../tools/wmk-app-bridge/export.py"><code>tools/wmk-app-bridge/export.py</code></a> — parser, validador e exportador.</li>
+<li><a href="../tools/wmk-app-bridge/examples/ridgeline.bindings.json"><code>examples/ridgeline.bindings.json</code></a> — cinco vínculos reais.</li>
+<li><a href="../tools/wmk-app-bridge/test_bridge.py"><code>test_bridge.py</code></a> — caso positivo e seis negativos.</li>
+<li><a href="../laboratorios/wmk-design-to-app/ridgeline-bridge-v0.1/wmk.manifest.json"><code>wmk.manifest.json</code></a> — manifesto efetivamente exportado.</li>
+<li><a href="../wmk-rad-presets/examples/crud-clientes-v1.json"><code>wmk-rad-presets/examples/crud-clientes-v1.json</code></a> — preset experimental.</li>
+<li><code>crates/doc/src/node.rs</code> — categorias de nós do documento.</li>
+<li><code>crates/engine/src/cmd/component.rs</code> — comandos de componentes e instâncias.</li>
+<li><code>crates/engine/src/dev/codegen.rs</code>, <code>component_codegen.rs</code> e <code>code_connect.rs</code> — mecanismos existentes de geração e associação com código.</li>
+<li><code>docs/components-parity.md</code> e <code>docs/dev-mode-parity.md</code> — documentação da engine e Dev Mode.</li>
+<li><a href="inventario-componentes-presets-rad.html">Manual: componentes e presets</a> · <a href="wmk-app-bridge-exportacao-react.html">Manual: WMK App Bridge</a> · <a href="laboratorio-react-typescript-wmk.html">Laboratório React/TS</a>.</li>
+</ul>
+<p><strong>Limite deste relatório:</strong> trata-se de uma análise do código e dos testes já executados no checkout em 08/11/2026, não de uma auditoria de segurança completa nem de certificação para produção.</p>
+</section>
+<footer class="foot">WMK Studio — Walney Moreira Klein — <a href="mailto:walneyk@hotmail.com">walneyk@hotmail.com</a>.<br>Relatório técnico de estudo e planejamento. Fork baseado em FigCraft; autoria e licenças originais preservadas.</footer>
+</main></body></html>
