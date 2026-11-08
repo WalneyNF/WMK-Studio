@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "wmk-app-bridge/v1",
+  "application": {
+    "id": "ridgeline",
+    "title": "Ridgeline App",
+    "defaultScreen": 68
+  },
+  "targets": {
+    "react": {
+      "language": "typescript",
+      "framework": "vite"
+    }
+  },
+  "bindings": [
+    {
+      "nodeId": 90,
+      "role": "input",
+      "name": "trailSearch",
+      "placeholder": "Buscar trilhas..."
+    },
+    {
+      "nodeId": 104,
+      "role": "button",
+      "action": {
+        "type": "screen.navigate",
+        "screenId": 178
+      }
+    },
+    {
+      "nodeId": 234,
+      "role": "button",
+      "action": {
+        "type": "screen.navigate",
+        "screenId": 68
+      }
+    },
+    {
+      "nodeId": 275,
+      "role": "button",
+      "action": {
+        "type": "screen.navigate",
+        "screenId": 178
+      }
+    },
+    {
+      "nodeId": 261,
+      "role": "input",
+      "name": "trailSearch",
+      "placeholder": "Buscar trilhas..."
+    }
+  ],
+  "dataModels": [
+    {
+      "id": "trails",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "notes": "Contrato externo de semantica, NAO suportado nativamente pelo WMK Studio ainda. Exemplo com IDs do documento real."
+}

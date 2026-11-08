@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "wmk-app-bridge/v1",
+  "sourceFormat": "figcraft",
+  "sourceVersion": 1,
+  "application": {
+    "id": "ridgeline",
+    "title": "Ridgeline App",
+    "defaultScreen": 68
+  },
+  "screens": [
+    {
+      "id": 68,
+      "name": "Home — Light",
+      "width": 393.0,
+      "height": 852.0
+    },
+    {
+      "id": 239,
+      "name": "Home — Dark",
+      "width": 393.0,
+      "height": 852.0
+    },
+    {
+      "id": 178,
+      "name": "Trail — Light",
+      "width": 393.0,
+      "height": 852.0
+    }
+  ],
+  "bindings": [
+    {
+      "nodeId": 90,
+      "role": "input",
+      "name": "trailSearch",
+      "placeholder": "Buscar trilhas..."
+    },
+    {
+      "nodeId": 104,
+      "role": "button",
+      "action": {
+        "type": "screen.navigate",
+        "screenId": 178
+      }
+    },
+    {
+      "nodeId": 234,
+      "role": "button",
+      "action": {
+        "type": "screen.navigate",
+        "screenId": 68
+      }
+    },
+    {
+      "nodeId": 275,
+      "role": "button",
+      "action": {
+        "type": "screen.navigate",
+        "screenId": 178
+      }
+    },
+    {
+      "nodeId": 261,
+      "role": "input",
+      "name": "trailSearch",
+      "placeholder": "Buscar trilhas..."
+    }
+  ],
+  "dataModels": [
+    {
+      "id": "trails",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "diagnostics": [
+    "Conversao visual parcial: vetores, efeitos, prototipos e auto layout nao sao totalmente convertidos",
+    "Bindings funcionais estao no contrato complementar, nao no arquivo WMK original",
+    "Entidades sao demonstrativas e persistidas no navegador; nao ha backend"
+  ]
+}
