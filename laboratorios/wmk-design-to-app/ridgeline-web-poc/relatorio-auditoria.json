@@ -1,0 +1,48 @@
+{
+  "source": "ridgeline-app.figcraft",
+  "copy": "ridgeline-laboratorio.wmk",
+  "format": "figcraft",
+  "version": 1,
+  "nodes": 349,
+  "types": {
+    "page": 1,
+    "component": 8,
+    "ellipse": 12,
+    "vector": 78,
+    "componentSet": 3,
+    "text": 79,
+    "frame": 122,
+    "instance": 24,
+    "star": 3,
+    "rectangle": 18,
+    "section": 1
+  },
+  "screens": [
+    {
+      "name": "Home — Light",
+      "width": 393.0,
+      "height": 852.0
+    },
+    {
+      "name": "Home — Dark",
+      "width": 393.0,
+      "height": 852.0
+    },
+    {
+      "name": "Trail — Light",
+      "width": 393.0,
+      "height": 852.0
+    }
+  ],
+  "styles": 0,
+  "variable_collections": 2,
+  "variable_count": 17,
+  "limitations": [
+    "vetores complexos nao renderizados fielmente",
+    "Auto Layout simplificado",
+    "sem acoes de prototipo automatizadas",
+    "sem backend/banco",
+    "sem logica CRUD"
+  ],
+  "note": "Copia .wmk e identica ao exemplo original .figcraft; metadado format=figcraft preservado."
+}
