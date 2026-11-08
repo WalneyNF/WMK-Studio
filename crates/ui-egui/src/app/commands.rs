@@ -228,7 +228,7 @@ impl FigApp {
                     }
                 }
                 "preview.close" => self.ui.preview = None,
-                "open.help" => self.services.open_url("https://getartcraft.com/apps/figcraft"),
+                "open.help" => self.services.open_url("https://github.com/WalneyNF/WMK-Studio/tree/main/manuais"),
                 // A link in text activated while editing (`text.openLink`): the engine checked it
                 // is a web or mail link.
                 "open.url" => {

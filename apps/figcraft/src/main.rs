@@ -61,6 +61,7 @@ struct App {
     /// The window title last sent: a viewport command asks for another frame, so it's only sent
     /// when the title changes (sending it every frame kept an idle window redrawing).
     title: String,
+    centered_on_start: bool,
     /// Shared with the services, which write the copies after a panic.
     recovery: recovery::Shared,
     /// Documents and quit requests from Finder, the Dock and Open With.
@@ -73,6 +74,12 @@ impl eframe::App for App {
     /// guarded background work, poll macOS open events, handle close requests and title
     /// changes, and schedule recovery repaints on the app clock.
     fn logic(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        if !self.centered_on_start {
+            if let Some(cmd) = egui::ViewportCommand::center_on_screen(ctx) {
+                ctx.send_viewport_cmd(cmd);
+                self.centered_on_start = true;
+            }
+        }
         {
             let mut slot = self.ctx_slot.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
             if slot.is_none() {
@@ -144,7 +151,7 @@ fn main() -> eframe::Result {
     let args: Vec<String> = std::env::args().skip(1).collect();
     if args.iter().any(|a| a == "--version" || a == "-V") {
         println!(
-            "FigCraft {}{}",
+            "WMK Studio {}{}",
             env!("CARGO_PKG_VERSION"),
             option_env!("FIGCRAFT_BUILD_SHA").filter(|s| !s.is_empty()).map(|s| format!(" ({s})")).unwrap_or_default()
         );
@@ -153,7 +160,7 @@ fn main() -> eframe::Result {
     let args = args::parse(&args);
     if let Some(flag) = args.unknown.first() {
         eprintln!(
-            "FigCraft: unknown option {flag}\nUsage: figcraft [--control PORT] [--automation-read-root DIR]... [--automation-write-root DIR]... [FILE | figcraft://join?...]..."
+            "WMK Studio: unknown option {flag}\nUsage: figcraft [--control PORT] [--automation-read-root DIR]... [--automation-write-root DIR]... [FILE | figcraft://join?...]..."
         );
         std::process::exit(2);
     }
@@ -164,7 +171,7 @@ fn main() -> eframe::Result {
         (true, _) => None,
         (false, Ok(r)) => Some(Arc::new(r)),
         (false, Err(e)) => {
-            eprintln!("FigCraft: {e}");
+            eprintln!("WMK Studio: {e}");
             std::process::exit(2);
         }
     };
@@ -229,7 +236,7 @@ fn main() -> eframe::Result {
     // open (no frame then).
     figcraft_ui_egui::i18n::set(&session.prefs.language, figcraft_ui_egui::Services::system_language(&svc).as_deref());
     let mut fig = FigApp::new(session, Box::new(svc));
-    fig.set_startup_update_check(true);
+    fig.set_startup_update_check(false);
     fig.automation_roots = roots;
     fig.ui.home = false;
     // Files named on the command line are the user's too: their missing fonts are listed.
@@ -249,9 +256,9 @@ fn main() -> eframe::Result {
     // The app id is the Wayland app_id and the X11 window class on Linux: the desktop entry's name
     // and StartupWMClass (FreeBSD's package matches the binary's name instead).
     let mut viewport = egui::ViewportBuilder::default()
-        .with_title("FigCraft")
+        .with_title("WMK Studio")
         .with_app_id("ai.storyteller.figcraft")
-        .with_inner_size([1440.0, 900.0])
+        .with_inner_size([1100.0, 720.0])
         .with_min_inner_size([800.0, 500.0])
         .with_drag_and_drop(true);
     // Who draws the window frame is decided once, before the viewport is built, by the shared
@@ -278,7 +285,7 @@ fn main() -> eframe::Result {
     #[cfg(target_os = "macos")]
     let apple_events = &apple_events;
     let result = eframe::run_native(
-        "FigCraft",
+        "WMK Studio",
         options,
         Box::new(|cc| {
             if let Some(state) = &cc.wgpu_render_state {
@@ -291,13 +298,14 @@ fn main() -> eframe::Result {
             // asks just as it does for the close button. Failure keeps winit's menu: the app
             // runs, but ⌘Q ends it without asking.
             #[cfg(target_os = "macos")]
-            if let Err(e) = craft_menu::mac::install_app_menu(&cc.egui_ctx, "FigCraft") {
+            if let Err(e) = craft_menu::mac::install_app_menu(&cc.egui_ctx, "WMK Studio") {
                 log::warn!("app menu: kept winit's Quit, which ends the app without asking: {e}");
             }
             Ok(Box::new(App {
                 queue,
                 ctx_slot,
                 title: String::new(),
+                centered_on_start: false,
                 recovery,
                 #[cfg(target_os = "macos")]
                 apple_events: apple_events.connect(&cc.egui_ctx),

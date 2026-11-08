@@ -81,7 +81,7 @@ impl FileKind {
     pub fn of(path: &Path) -> FileKind {
         let ext = path.extension().map(|e| e.to_string_lossy().to_ascii_lowercase()).unwrap_or_default();
         match ext.as_str() {
-            "figcraft" => FileKind::FigCraft,
+            "wmk" | "figcraft" => FileKind::FigCraft,
             // A FigJam `.jam` is the same archive.
             "fig" | "jam" => FileKind::Fig,
             "sketch" => FileKind::Sketch,

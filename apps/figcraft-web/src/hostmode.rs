@@ -3,13 +3,13 @@
 //! a handed-over file becomes the document's file. Which pages host the app is `craft-web-host`'s.
 
 /// The file name used when an open request carries no usable one.
-pub const DEFAULT_OPEN_NAME: &str = "Untitled.figcraft";
+pub const DEFAULT_OPEN_NAME: &str = "Untitled.wmk";
 
 /// The extensions of files that can be a document's own file: the formats `file.save` and
 /// `file.saveAs` write (`file.open` opens both as native documents). A `.fig` file is an export
 /// copy instead, and so is everything else the app hands over (rendered images, SVG, PDF,
 /// variables).
-const DOC_EXTS: &[&str] = &["figcraft", "json"];
+const DOC_EXTS: &[&str] = &["wmk", "figcraft", "json"];
 
 /// The suffix `variable.export`'s downloads carry: a `.json` that is a variables sidecar, not a
 /// document, so its extension alone can't tell the `saveAs` decision.
@@ -65,13 +65,15 @@ mod tests {
         assert!(!save_as("Poster.figcraft", Some("Poster.figcraft")));
         assert!(!save_as("poster.FIGCRAFT", Some("Poster.figcraft")), "names compare without case");
         assert!(!save_as("design.json", Some("design.json")));
+        assert!(!save_as("Poster.wmk", Some("Poster.wmk")));
     }
 
     #[test]
     fn a_new_document_file_is_save_as() {
         assert!(save_as("Poster 2.figcraft", Some("Poster.figcraft")));
+        assert!(save_as("Poster.wmk", Some("Poster.figcraft")));
         assert!(save_as("Poster.json", Some("Poster.figcraft")), "the other format a document's file takes");
-        assert!(save_as("Untitled.figcraft", None), "the host never sent a file");
+        assert!(save_as("Untitled.wmk", None), "the host never sent a file");
         assert!(save_as("Poster.figcraft", Some("design.json")), "the opened .json saved as .figcraft is a new file");
     }
 

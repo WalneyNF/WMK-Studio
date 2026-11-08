@@ -106,7 +106,7 @@ pub fn specs() -> Vec<CommandSpec> {
         spec!(
             "file.saveAs",
             "Save as",
-            "{path | data: true (no path: returns the file as base64 `data` with its `name`, for a download)} (no extension adds .figcraft); a .fig path writes an experimental export copy of the shown document with `warnings`, keeping the native path, unsaved changes and version preview",
+            "{path | data: true (no path: returns the file as base64 `data` with its `name`, for a download)} (no extension adds .wmk); a .fig path writes an experimental export copy of the shown document with `warnings`, keeping the native path, unsaved changes and version preview",
             false,
             save_as
         ),

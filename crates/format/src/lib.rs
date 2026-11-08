@@ -40,7 +40,7 @@ use serde::{Deserialize, Serialize, Serializer};
 use serde_json::{Value, json};
 use sha2::Digest;
 
-pub const EXTENSION: &str = "figcraft";
+pub const EXTENSION: &str = "wmk";
 pub const FORMAT: &str = "figcraft";
 pub const VERSION: u32 = 1;
 /// Largest archive member we read (guards against zip bombs).

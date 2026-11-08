@@ -106,7 +106,7 @@ impl FileSnapshot {
 fn refuse_dropping_images(ds: &DocState, path: &str) -> Result<()> {
     match ds.images_lost_saving_to(path) {
         Some(count) => Err(EngineError::Other(format!(
-            "{} wasn't saved: {count} of its images weren't loaded (together they pass what FigCraft reads from one file), and saving over it would delete them. Save it under another name; this file keeps them.",
+            "{} wasn't saved: {count} of its images weren't loaded (together they pass what WMK Studio reads from one file), and saving over it would delete them. Save it under another name; this file keeps them.",
             file_stem(path)
         ))),
         None => Ok(()),
@@ -180,7 +180,7 @@ fn save_to(s: &mut Session, path: Option<String>) -> Result<Value> {
     let bytes = snapshot.encode()?;
     let Some(path) = path else {
         // The download can still be refused: the caller marks the file saved once it was delivered.
-        let name = format!("{}.figcraft", ds.doc.name);
+        let name = format!("{}.wmk", ds.doc.name);
         return Ok(json!({"name": name, "bytes": bytes.len(), "data": base64::engine::general_purpose::STANDARD.encode(&bytes)}));
     };
     write(&path, &bytes)?;
@@ -231,7 +231,7 @@ pub(super) fn save_as(s: &mut Session, p: &Value) -> Result<Value> {
     match string(p, "path") {
         Some(mut path) => {
             if ext(&path).is_empty() {
-                path.push_str(".figcraft");
+                path.push_str(".wmk");
             }
             save_to(s, Some(path))
         }

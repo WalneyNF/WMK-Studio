@@ -89,7 +89,7 @@ O projeto inclui o catálogo de tradução **`crates/ui-egui/locales/pt-BR.toml`
 
 Abra o programa e selecione **Preferências → Idioma → Português (Brasil)** (*Preferences → Language*). A escolha pode ser aplicada sem reiniciar. Nesta personalização, `pt-BR` foi configurado como idioma padrão para novas preferências; configurações existentes podem continuar com a opção anterior.
 
-Alguns textos podem permanecer em inglês por falta de tradução. Consulte o [guia de idioma e identidade](manuais/identidade-idioma-wmk.html).
+Para novas preferências, o tema inicial será **escuro**, alinhado à identidade roxa WMK. Se você já usa o programa, as opções antigas permanecem salvas; altere o tema manualmente em **Preferências**. Alguns textos podem permanecer em inglês por falta de tradução. Consulte o [guia de idioma e identidade](manuais/identidade-idioma-wmk.html).
 
 ## Nova identidade WMK
 
@@ -138,6 +138,7 @@ O curso não instala programas nem executa ações externas: é material educaci
 | Material | Para quem serve |
 |---|---|
 | **[Central de manuais](manuais/index.html)** | Índice geral e navegação por todos os guias |
+| **[Guia dos 8 templates nativos](manuais/guia-templates-iniciais.html)** | Aprenda com modelos prontos do editor |
 | **[Curso interativo completo](manuais/curso-wmk-studio.html)** | Formação prática em 8 módulos, com exercícios e avaliações |
 | **[Manual completo de usuários](manuais/manual-completo-usuarios-wmk-studio.html)** | Consulta detalhada aos recursos e exercícios |
 | **[Primeira aula prática](manuais/aula-pratica-figcraft.html)** | Aprender Frame, canvas, cores, texto e propriedades |

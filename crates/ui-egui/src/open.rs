@@ -5,7 +5,7 @@ use super::{OsStr, Path, theme};
 
 /// The file types File ▸ Open and a drop on the home screen open.
 pub(crate) const OPEN_EXTENSIONS: &[&str] =
-    &["figcraft", "fig", "jam", "penpot", "sketch", "json", "svg", "png", "jpg", "jpeg", "webp", "gif", "tif", "tiff"];
+    &["wmk", "figcraft", "fig", "jam", "penpot", "sketch", "json", "svg", "png", "jpg", "jpeg", "webp", "gif", "tif", "tiff"];
 
 /// Whether `path` names a file type that opens as a document (the extension, in any case).
 pub(crate) fn opens(path: &Path) -> bool {
@@ -17,7 +17,7 @@ pub(crate) fn opens(path: &Path) -> bool {
 pub(crate) fn is_document(path: &Path) -> bool {
     path.extension()
         .and_then(OsStr::to_str)
-        .is_some_and(|e| ["figcraft", "fig", "jam", "penpot", "sketch", "json"].iter().any(|x| x.eq_ignore_ascii_case(e)))
+        .is_some_and(|e| ["wmk", "figcraft", "fig", "jam", "penpot", "sketch", "json"].iter().any(|x| x.eq_ignore_ascii_case(e)))
 }
 
 /// Reads the contents of dropped file `name` that has no file on disk to read by path.

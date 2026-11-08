@@ -183,7 +183,7 @@ fn dropped(app: &mut FigApp, ctx: &egui::Context) {
     let files = ctx.input(|i| i.raw.dropped_files.clone());
     for f in files {
         if !crate::opens(f.path()) {
-            app.toast(tr("Drop a .figcraft, .fig, .jam, .sketch, .json, .svg or image file."));
+            app.toast(tr("Drop a .wmk, .figcraft, .fig, .jam, .sketch, .json, .svg or image file."));
             continue;
         }
         crate::pending_open::open_dropped(app, &f);
@@ -334,7 +334,7 @@ fn recents(app: &mut FigApp, ui: &mut Ui, t: &Tokens) {
     ui.horizontal_wrapped(|ui| {
         new_file = action_card(ui, t, Icon::PenNib, tr("New design file"), tr("Start from a blank canvas"));
         new_board = action_card(ui, t, Icon::Board, tr("New board"), tr("Sticky notes, shapes and connectors"));
-        open = action_card(ui, t, Icon::Page, tr("Open file"), tr("Open .figcraft, .svg or images"));
+        open = action_card(ui, t, Icon::Page, tr("Open file"), tr("Open .wmk, .figcraft, .svg or images"));
     });
     if new_file || new_board {
         app.run(if new_board { "file.newBoard" } else { "file.new" }, json!({}));

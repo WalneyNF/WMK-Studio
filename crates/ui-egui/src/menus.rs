@@ -97,7 +97,7 @@ pub fn invoke(app: &mut FigApp, id: &str) {
         "board.nextSticky" => {
             app.run(id, json!({"edit": true}));
         }
-        "help.checkForUpdates" | "app.checkForUpdates" => crate::updates_ui::check(app),
+        "help.checkForUpdates" | "app.checkForUpdates" => app.services.open_url("https://github.com/WalneyNF/WMK-Studio/releases"),
         "plugin.import" => crate::plugins_ui::import_dialog(app),
         "file.import" => app.import_dialog(false),
         "file.placeImage" => app.import_dialog(true),
