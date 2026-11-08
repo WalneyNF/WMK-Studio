@@ -1,0 +1,48 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CRUD: VFP, PHP, React e Node — WMK Studio</title><style>body{background:#0B0217;color:#F5E9FF;font:16px/1.7 system-ui,Segoe UI,sans-serif;max-width:1000px;margin:auto;padding:25px}header,section{background:#1B0736;border:1px solid #70438e;border-radius:14px;padding:20px;margin:18px 0}header{display:flex;gap:20px;align-items:center}header img{width:100px}h1,h2,h3,a{color:#E6B3FF}table{width:100%;border-collapse:collapse}th,td{padding:10px;border:1px solid #684087;text-align:left}th{background:#361450}pre{background:#080313;padding:16px;border-radius:8px;overflow:auto;color:#E6B3FF}code{color:#E6B3FF}li{margin:8px 0}small{color:#B79CD9}@media(max-width:650px){body{padding:10px}header{display:block}header img{width:80px}}</style></head><body><header><img src="../wmk-logo.png" alt="Logo WMK Studio"><div><h1>Do CRUD no Visual FoxPro ao React, Node.js e TypeScript</h1><p>Guia de arquitetura e equivalências para programadores VFP — Academia WMK Studio</p><small>Walney Moreira Klein — walneyk@hotmail.com</small></div></header><p><a href="index.html">Central de manuais</a> · <a href="do-design-ao-app-com-ia.html">Do Design ao App</a> · <a href="arquitetura-central-rad-wmk.html">Central RAD</a></p>
+<section><h2>1. Conceitos equivalentes</h2><table><tr><th>VFP</th><th>Laravel/CodeIgniter</th><th>React + Node/TypeScript</th></tr><tr><td>Form SCX</td><td>View/Blade</td><td>Componente React TSX</td></tr><tr><td>Classe VCX</td><td>Classe e componentes de UI</td><td>Biblioteca de componentes React</td></tr><tr><td>PRG</td><td>Service/Helper</td><td>Módulo/Service TS</td></tr><tr><td>Botão.Click</td><td>Form submit + controller</td><td>onClick/onSubmit + request HTTP</td></tr><tr><td>SELECT/UPDATE DBF</td><td>Eloquent/Query Builder</td><td>Repository ORM/SQL no backend</td></tr><tr><td>Grid/BROWSE</td><td>Grid/tabela na view</td><td>DataGrid React, paginação na API</td></tr></table></section>
+<section><h2>2. Separação de responsabilidades</h2><pre>Navegador: React / TypeScript
+  Formulário → botão Salvar → ClienteApi.criar()
+      ↓ HTTP POST /api/clientes
+Servidor: Node.js / Fastify
+  Rota → autenticação e autorização → schema de validação
+      ↓
+  ClienteService (regras) → ClienteRepository (SQL)
+      ↓
+  Banco: SQLite, MariaDB ou PostgreSQL
+      ↓
+  Resposta HTTP → React atualiza a interface</pre><p>No VFP, uma aplicação desktop pode chamar a camada de dados dentro do formulário; na Web, o frontend não deve conectar diretamente ao banco com credenciais. A separação API/backend é obrigatória em arquiteturas cliente-servidor comuns.</p></section>
+<section><h2>3. Comparando o evento Click</h2><h3>VFP</h3><pre>* cmdSalvar.Click()
+THISFORM.Salvar()</pre><h3>React/TypeScript — botão</h3><pre>async function salvarCliente(nome: string) {
+  const resposta = await fetch('/api/clientes', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({nome})
+  });
+  if (!resposta.ok) throw new Error('Falha ao salvar');
+  return resposta.json();
+}
+// &lt;button onClick={() => salvarCliente(nome)}&gt;Salvar&lt;/button&gt;</pre><h3>Node/Fastify — endpoint simplificado</h3><pre>app.post('/api/clientes', async (request, reply) => {
+  // Validar request.body com schema na rota;
+  // exigir autenticação e autorização em produção.
+  const cliente = await clienteService.criar(request.body);
+  return reply.code(201).send(cliente);
+});</pre><p>Os códigos são exemplos didáticos, sem contratos completos de segurança, persistência ou tipagem. <strong>Não são um CRUD funcional pronto.</strong></p></section>
+<section><h2>4. O que cada camada deve fazer?</h2><table><tr><th>Parte</th><th>Responsabilidade</th></tr><tr><td>Componentes React</td><td>Campos, estados, eventos do usuário, feedback visual</td></tr><tr><td>Hook ou service de frontend</td><td>Chamadas HTTP, loading, erros, cache e revalidação</td></tr><tr><td>Controller/rota Node</td><td>Entrada HTTP, autenticação, validação, códigos de resposta</td></tr><tr><td>Service de domínio</td><td>Regras de negócio e orquestração de operações</td></tr><tr><td>Repository</td><td>Acesso SQL/ORM e persistência</td></tr><tr><td>Banco</td><td>Integridade, constraints, índices e transações</td></tr></table></section>
+<section><h2>5. Herança RAD versus código exportado</h2><p>O usuário poderá configurar <code>frmCadastro</code> com eventos herdáveis (Novo, Salvar, Editar, Excluir) e derivar <code>frmCadClientes</code>. Internamente, o catálogo RAD terá um contrato de ações, por exemplo <code>crud.save</code>, vinculado a uma entidade. O exportador React poderá gerar composição, hooks, service de frontend e backend sem impor herança de componentes React, que geralmente é menos idiomática nesse ecossistema.</p><p>Ao exportar PHP, o mesmo contrato poderá ser transformado em controllers, services, models e views Laravel/CodeIgniter, usando as convenções reais de cada framework. Isso requer geradores distintos, testes e manutenção independentes.</p></section>
+<section><h2>6. Projeto exportado esperado</h2><pre>clientes-app/
+├── frontend/
+│   ├── src/components/WMKButton.tsx
+│   ├── src/forms/FrmCadClientes.tsx
+│   ├── src/services/clientes.ts
+│   └── package.json
+├── backend/
+│   ├── src/routes/clientes.ts
+│   ├── src/services/ClienteService.ts
+│   ├── src/repositories/ClienteRepository.ts
+│   ├── migrations/
+│   └── package.json
+├── tests/
+├── .env.example
+└── README.md</pre></section>
+<section><h2>7. Como converter isso em recursos WMK</h2><ol><li>Criar biblioteca WMK de formulários e controles visuais.</li><li>Definir catálogo de entidades: clientes, produtos, fornecedores, tipos e relacionamentos.</li><li>Definir eventos de controles com identificadores semânticos (ex.: <code>crud.save</code>).</li><li>Permitir sobrescrever ou estender rotinas herdadas por contrato versionado.</li><li>Gerar primeiro uma stack funcional (React/TypeScript + Fastify + SQLite).</li><li>Executar build, migrations, testes CRUD, validação e revisão visual.</li><li>Adicionar adaptador PHP/Laravel ou CodeIgniter depois, sem alterar o catálogo visual.</li><li>Acoplar Ollama/Groq apenas depois que o gerador determinístico funcionar.</li></ol></section>
+<section><h2>8. Cuidados</h2><p>Um formulário desenhado não define automaticamente autenticação, autorização, transações ou estrutura de banco. O gerador precisa de schemas e regras explícitas. Toda regra crítica deve ser validada no backend, e a aplicação exportada deve compilar e executar sem depender do editor WMK.</p><p>Esse fluxo é uma proposta para a evolução do fork. O WMK Studio atual possui editor visual e alguns geradores de trechos de código, mas ainda não é uma fábrica integrada de CRUDs full-stack.</p></section><footer>WMK Studio • Walney Moreira Klein — walneyk@hotmail.com • Projeto derivado de FigCraft / ArtCraft Team; créditos e licenças originais preservados.</footer></body></html>
