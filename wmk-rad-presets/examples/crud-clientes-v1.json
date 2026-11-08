@@ -1,0 +1,139 @@
+{
+  "schemaVersion": "wmk-rad-preset-v0.1",
+  "status": "proposal-not-native",
+  "id": "wmk.crud.clientes.v1",
+  "name": "CRUD de Clientes",
+  "category": "sistemas-comerciais/crud",
+  "version": "1.0.0",
+  "baseTemplate": "wmk.form",
+  "theme": "wmk-dark",
+  "componentsRegistry": "../../registry.json",
+  "allowedStacks": [
+    "react-typescript-fastify-sqlite",
+    "php-mariadb"
+  ],
+  "entity": {
+    "name": "clientes",
+    "fields": [
+      {
+        "id": "codigo",
+        "type": "uuid",
+        "required": true
+      },
+      {
+        "id": "nome",
+        "type": "string",
+        "required": true
+      },
+      {
+        "id": "email",
+        "type": "email",
+        "required": false
+      },
+      {
+        "id": "ativo",
+        "type": "boolean",
+        "required": true
+      }
+    ]
+  },
+  "composition": {
+    "component": "wmk.form",
+    "slots": {
+      "header": [
+        {
+          "component": "wmk.heading",
+          "props": {
+            "label": "Cadastro de Clientes"
+          }
+        }
+      ],
+      "content": [
+        {
+          "component": "wmk.fieldGroup",
+          "slots": {
+            "fields": [
+              {
+                "component": "wmk.input",
+                "props": {
+                  "label": "Nome",
+                  "bind": "clientes.nome"
+                }
+              },
+              {
+                "component": "wmk.input",
+                "props": {
+                  "label": "E-mail",
+                  "bind": "clientes.email"
+                }
+              },
+              {
+                "component": "wmk.select",
+                "props": {
+                  "label": "Situação",
+                  "bind": "clientes.ativo"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "component": "wmk.dataGrid",
+          "props": {
+            "entity": "clientes",
+            "columns": [
+              "codigo",
+              "nome",
+              "email",
+              "ativo"
+            ]
+          }
+        }
+      ],
+      "actions": [
+        {
+          "component": "wmk.actionBar",
+          "slots": {
+            "buttons": [
+              {
+                "component": "wmk.button",
+                "props": {
+                  "label": "Novo",
+                  "action": "crud.new"
+                }
+              },
+              {
+                "component": "wmk.button",
+                "props": {
+                  "label": "Salvar",
+                  "action": "crud.save"
+                }
+              },
+              {
+                "component": "wmk.button",
+                "props": {
+                  "label": "Excluir",
+                  "action": "crud.delete"
+                }
+              },
+              {
+                "component": "wmk.button",
+                "props": {
+                  "label": "Cancelar",
+                  "action": "crud.cancel"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "rules": {
+    "strictHierarchy": true,
+    "preserveTheme": true,
+    "rejectUnknownComponents": true,
+    "requireKnownActions": true
+  },
+  "disclaimer": "Exemplo de contrato; NAO e importado diretamente pelo editor WMK atual."
+}

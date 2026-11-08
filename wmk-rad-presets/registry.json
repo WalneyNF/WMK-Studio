@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "wmk-rad-registry-v0.1",
+  "status": "proposal-not-native",
+  "componentDefinitions": [
+    {
+      "id": "wmk.form",
+      "kind": "container",
+      "source": "Frame + component",
+      "slots": {
+        "header": {
+          "accept": [
+            "wmk.heading"
+          ],
+          "min": 1,
+          "max": 1
+        },
+        "content": {
+          "accept": [
+            "wmk.fieldGroup",
+            "wmk.dataGrid"
+          ],
+          "min": 0,
+          "max": 20
+        },
+        "actions": {
+          "accept": [
+            "wmk.actionBar"
+          ],
+          "min": 1,
+          "max": 1
+        }
+      }
+    },
+    {
+      "id": "wmk.heading",
+      "kind": "visual",
+      "source": "Text + component"
+    },
+    {
+      "id": "wmk.fieldGroup",
+      "kind": "container",
+      "source": "Frame + auto layout",
+      "slots": {
+        "fields": {
+          "accept": [
+            "wmk.input",
+            "wmk.select"
+          ],
+          "min": 1,
+          "max": 20
+        }
+      }
+    },
+    {
+      "id": "wmk.input",
+      "kind": "visual",
+      "source": "Rectangle + Text + component"
+    },
+    {
+      "id": "wmk.select",
+      "kind": "visual",
+      "source": "Rectangle + Text + component"
+    },
+    {
+      "id": "wmk.actionBar",
+      "kind": "container",
+      "source": "Frame + auto layout",
+      "slots": {
+        "buttons": {
+          "accept": [
+            "wmk.button"
+          ],
+          "min": 1,
+          "max": 8
+        }
+      }
+    },
+    {
+      "id": "wmk.button",
+      "kind": "visual",
+      "source": "Frame + Text + component"
+    },
+    {
+      "id": "wmk.dataGrid",
+      "kind": "visual",
+      "source": "Frame + Text + repeated rows"
+    }
+  ],
+  "notes": [
+    "Definicoes propostas, nao componentes nativos ja registrados.",
+    "Uma classe executavel/heranca de metodos ainda nao existe no WMK Studio atual."
+  ]
+}
