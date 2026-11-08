@@ -1,0 +1,21 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Laboratório WMK para React e TypeScript</title><style>body{background:#0B0217;color:#F5E9FF;font:16px/1.7 system-ui,Segoe UI,sans-serif;max-width:1000px;margin:auto;padding:24px}header,section{background:#1B0736;border:1px solid #684085;padding:18px;border-radius:12px;margin:16px 0}header{display:flex;gap:15px;align-items:center}header img{width:85px}h1,h2,a{color:#E6B3FF}table{width:100%;border-collapse:collapse}td,th{border:1px solid #684085;padding:9px;text-align:left}th{background:#351450}pre{background:#0B0217;color:#E6B3FF;padding:12px;overflow:auto}small{color:#B79CD9}</style></head><body><header><img src="../wmk-logo.png" alt="WMK Studio"><div><h1>Laboratório 02 — WMK para React + TypeScript</h1><p>Prova de conversão do documento de design para projeto web compilável</p><small>Walney Moreira Klein — walneyk@hotmail.com</small></div></header><p><a href="index.html">Manuais</a> · <a href="laboratorio-formato-wmk-para-app-web.html">Laboratório 01</a></p>
+<section><h2>O que foi realizado</h2><p>O documento original <code>examples/ridgeline-app.figcraft</code> contém 349 nós e três Frames principais. O Laboratório 01 extraiu a árvore para <code>design.json</code>. Nesta etapa, geramos um projeto independente em React 19, TypeScript e Vite usando essa árvore.</p><p>Comandos <code>npm install --no-audit --no-fund</code> e <code>npm run build</code> executados. Checagem de tipos TypeScript e build Vite concluídos com código de saída zero (31 módulos transformados). O instalador npm avisou que bloqueou um script de pós-instalação do esbuild, mas o build concluiu.</p></section>
+<section><h2>Resultado</h2><table><tr><th>Recurso</th><th>Situação</th></tr><tr><td>Árvore de design e três telas</td><td>Importada como JSON real</td></tr><tr><td>Textos, posições e formas simples</td><td>Reconstrução parcial em React</td></tr><tr><td>Navegação entre Frames</td><td>Implementada em React, não extraída de ações do protótipo</td></tr><tr><td>Pesquisa e filtro de trilhas</td><td>Demo com três registros fictícios definidos no código</td></tr><tr><td>Favoritos</td><td>Implementados com localStorage; não há servidor</td></tr><tr><td>Vetores, auto-layout e efeitos</td><td>Conversão incompleta; aparência não validada visualmente</td></tr><tr><td>TypeScript e build de produção</td><td>Aprovados</td></tr><tr><td>Testes em browser / backend / banco</td><td>Ainda não realizados</td></tr></table></section>
+<section><h2>Executar</h2><pre>cd D:\Ferramentas\figcraft\laboratorios\wmk-design-to-app\ridgeline-react-ts
+npm install
+npm run dev
+# Em outro momento:
+npm run build</pre><p>O endereço de desenvolvimento será exibido pelo Vite. <strong>Não abra index.html diretamente do Explorador:</strong> o projeto usa módulos e deve ser servido pelo Vite ou pela pasta dist em um servidor HTTP.</p></section>
+<section><h2>Estrutura gerada</h2><pre>ridgeline-react-ts/
+├── src/
+│   ├── design.json
+│   ├── DesignCanvas.tsx
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── style.css
+├── package.json
+├── package-lock.json
+├── tsconfig.json
+├── index.html
+└── README.md</pre></section>
+<section><h2>O que falta para ser uma fábrica de aplicativos</h2><ol><li>Melhorar a fidelidade usando os exports de SVG/PNG da própria engine.</li><li>Mapear os componentes da biblioteca WMK para implementações React reais via Code Connect.</li><li>Traduzir as ações do protótipo e permitir eventos declarativos criados pelo usuário.</li><li>Acrescentar modelos de dados, validação, Fastify, SQLite e CRUD com testes.</li><li>Construir um exportador de um clique integrado ao programa.</li></ol><p>Este experimento é uma prova de viabilidade parcial. <strong>Não existe neste momento conversão automática e completa de qualquer documento para qualquer stack.</strong></p></section><footer>WMK Studio — Walney Moreira Klein — walneyk@hotmail.com. Mantidos os créditos e licenças dos autores originais do FigCraft.</footer></body></html>

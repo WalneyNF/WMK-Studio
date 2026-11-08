@@ -1,0 +1,15 @@
+{
+  "source": "ridgeline-app.figcraft",
+  "screens": 3,
+  "nodes": 349,
+  "stack": "React 19 + TypeScript + Vite",
+  "structural_tests": "passed",
+  "installed_dependencies": true,
+  "build_executed": true,
+  "note": "TypeScript+Vite build passed. Visual fidelity and browser interactions not yet tested end-to-end.",
+  "zip": "D:\\Ferramentas\\figcraft\\laboratorios\\wmk-design-to-app\\WMK-Ridgeline-React-TypeScript-v0.2.zip",
+  "size_bytes": 31252,
+  "typescript_typecheck": "passed",
+  "vite_production_build": "passed",
+  "browser_visual_comparison": "not_performed"
+}
