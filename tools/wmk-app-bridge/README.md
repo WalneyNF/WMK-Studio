@@ -35,3 +35,25 @@ python tools\wmk-app-bridge\test_bridge.py
 npm run build na pasta exportada
 
 Créditos: Walney Moreira Klein — walneyk@hotmail.com; fork WMK Studio baseado em FigCraft/ArtCraft Team. Licencas originais preservadas.
+
+## Versão 0.2 — SQLite real (implementado e testado)
+
+O exportador produz um frontend React/TypeScript e backend Node.js com SQLite nativo. Requer Node >= 22.13; validado com Node 26.
+
+Na pasta do projeto exportado, executar:
+
+    npm install
+    npm run dev:full
+
+Acesse o endereço informado pelo Vite (geralmente http://localhost:5173/). A API escuta somente em 127.0.0.1:3337. Os dados ficam na pasta data/wmk.sqlite. Nunca exponha essa API publicamente: ela não tem autenticação.
+
+Endpoints: GET /api/health; GET, POST /api/entities/:entity; GET, PUT e DELETE /api/entities/:entity/:id.
+
+Testes executados: node --check no backend; POST, GET, PUT, DELETE, validação de entradas, rejeição de campos desconhecidos, reinício do servidor e confirmação de persistência no SQLite; tsc e build Vite.
+
+Rodar regressão:
+
+    python tools/wmk-app-bridge/test_bridge.py
+    python tools/wmk-app-bridge/test_sqlite_backend.py
+
+Pendente: Inspector gráfico dentro do WMK Studio, fidelidade de SVG/Auto Layout, autenticação e migrações do esquema. Este é um laboratório, não produto pronto para clientes.

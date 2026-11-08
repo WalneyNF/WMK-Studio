@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "status": "prototipo funcional local",
+  "source_document": "ridgeline-laboratorio.wmk",
+  "nodes": 349,
+  "screens": 3,
+  "bindings": 5,
+  "validation_tests": "PASS: Node syntax and real HTTP CRUD, invalid input, restart persistence, delete",
+  "frontend_build": "PASS: TypeScript + Vite 33 modules",
+  "browser_e2e": "NOT_TESTED",
+  "native_wmk_behavior_inspector": "NOT_IMPLEMENTED",
+  "storage": "SQLite file on disk",
+  "security": "local only; no authentication"
+}

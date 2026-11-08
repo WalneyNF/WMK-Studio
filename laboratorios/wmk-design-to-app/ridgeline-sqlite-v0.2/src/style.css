@@ -1,0 +1,12 @@
+*{box-sizing:border-box}body{margin:0;background:#10051c;color:#f6eaff;font:15px/1.5 Inter,system-ui,Segoe UI,sans-serif}main{max-width:1330px;margin:auto;padding:20px}h1{color:#e6b3ff}h2{font-size:1.15rem}nav{display:flex;gap:10px;align-items:center;margin-bottom:17px;flex-wrap:wrap}button,select,input{background:#341c4d;color:white;border:1px solid #78519a;border-radius:7px;padding:9px 12px;font:inherit}button{cursor:pointer}button:hover{background:#67318c}.columns{display:grid;grid-template-columns:minmax(430px,1.2fr) minmax(300px,.8fr);gap:18px}section{background:#241136;border:1px solid #6a3c82;border-radius:12px;padding:15px}.canvas-wrap{overflow:auto;background:#38254b;padding:16px;border-radius:12px;display:flex;justify-content:center}.canvas-screen{position:relative;background:white;overflow:hidden;flex-shrink:0;box-shadow:0 12px 28px #0008;border-radius:12px}.note,footer{color:#bfa6cf}.functions{display:flex;flex-direction:column;gap:12px}.functions article{background:#301a49;padding:12px;border-radius:9px;margin:9px 0}.functions article small{display:block}.functions article button{margin:6px 6px 0 0;font-size:13px}aside{background:#3d2458;border-radius:9px;padding:12px}footer{padding:24px 0}@media(max-width:900px){.columns{grid-template-columns:1fr}.canvas-wrap{justify-content:flex-start}}
+.bridge-canvas{position:relative;width:max-content;max-width:100%}
+.bridge-controls{position:absolute;left:16px;top:16px;pointer-events:none}
+.bridge-controls input,.bridge-controls button{pointer-events:auto}
+.wmk-hotspot{background:transparent!important;border:none!important;cursor:pointer;border-radius:6px}
+.wmk-hotspot:hover{outline:2px solid #e6b3ff}
+.wmk-input{background:#fff!important;color:#172033!important;border:1px solid #aa88d6!important;padding:4px!important;border-radius:5px!important;font-size:12px!important}
+.functions form{display:grid;gap:10px}
+.functions form label{display:grid;gap:4px}
+.functions article{margin-top:8px}
+
+.functions .actions{display:flex;gap:8px;flex-wrap:wrap}.error{color:#ffb1b1}.notice{color:#95ecc1}button:disabled{opacity:.5;cursor:wait}
