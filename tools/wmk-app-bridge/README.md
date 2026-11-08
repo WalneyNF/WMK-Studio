@@ -57,3 +57,9 @@ Rodar regressão:
     python tools/wmk-app-bridge/test_sqlite_backend.py
 
 Pendente: Inspector gráfico dentro do WMK Studio, fidelidade de SVG/Auto Layout, autenticação e migrações do esquema. Este é um laboratório, não produto pronto para clientes.
+
+
+### Teste de inicialização integrada (Vite + proxy HTTP + SQLite)
+O arquivo test_vite_proxy.py inicia o servidor Node e o Vite em portas de teste, faz GET na página web e consulta /api/health através do proxy do Vite, depois encerra ambos os processos. Teste executado com sucesso em 08/11/2026. Ainda não equivale a teste de clique/renderização no navegador.
+
+    python tools/wmk-app-bridge/test_vite_proxy.py
