@@ -150,6 +150,7 @@ O curso não instala programas nem executa ações externas: é material educaci
 | **[Manual de compilação Windows](manuais/manual-compilacao-windows.html)** | Ambiente, dependências, build e diagnóstico |
 | **[Idioma português e identidade WMK](manuais/identidade-idioma-wmk.html)** | Tema roxo, tradução e instalação da logo |
 | **[Formato nativo .wmk](manuais/formato-wmk.html)** | Salvamento, compatibilidade e migração de arquivos |
+| **[Arquitetura Central RAD](manuais/arquitetura-central-rad-wmk.html)** | Bibliotecas, templates, regras de composição e gerador IA |
 | **[Raio X completo do código](manuais/raio-x-completo-wmk-studio.html)** | Inventário de módulos, componentes, templates, limitações e roadmap de IA |
 | **[Raio X técnico](manuais/raio-x-tecnico.html)** | Visão de arquitetura, módulos e manutenção |
 | **[Roadmap](manuais/roadmap.html)** | Planejamento de melhorias, testes e evolução do fork |

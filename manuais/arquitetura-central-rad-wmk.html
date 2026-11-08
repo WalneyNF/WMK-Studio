@@ -1,0 +1,60 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Arquitetura Central RAD — WMK Studio</title><style>:root{color-scheme:dark}*{box-sizing:border-box}body{background:#0B0217;color:#F5E9FF;max-width:1020px;margin:auto;padding:24px;font:16px/1.75 system-ui,Segoe UI,sans-serif}header,section{background:#1B0736;border:1px solid #634087;padding:20px;border-radius:14px;margin:16px 0}header{display:flex;align-items:center;gap:20px}header img{width:100px;height:100px;object-fit:contain}h1,h2,h3{color:#E6B3FF}a{color:#E6B3FF}li{margin:8px 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#090313;border:1px solid #704494;padding:16px;border-radius:9px;color:#eeddff}code{color:#f0caff}table{width:100%;border-collapse:collapse}th,td{border:1px solid #68428f;padding:10px;text-align:left}th{background:#32134e}.note{border-left:4px solid #E036FF;padding:15px;background:#2C1451;border-radius:9px}footer{padding:25px 0;color:#B79CD9}@media(max-width:600px){body{padding:10px}header{display:block}header img{width:70px}}</style></head><body><header><img src="../wmk-logo.png" alt="Logo WMK Studio"><div><h1>WMK RAD Studio — Arquitetura da Central RAD</h1><p>Como transformar bibliotecas, templates, regras e IA em um ambiente visual de desenvolvimento rápido.</p><small>Walney Moreira Klein — walneyk@hotmail.com</small></div></header><p><a href="index.html">Central de manuais</a> · <a href="raio-x-completo-wmk-studio.html">Raio X do projeto</a> · <a href="manual-design-para-programadores-e-ia.html">Design para programadores e IA</a></p>
+<section><h2>1. Objetivo</h2><p>Permitir que o usuário escolha um template aprovado (Login V1/V2, Landing V1/V2, Cadastro V1/V2), configure o tema, informe entidades e ações e gere um documento visual editável dentro do WMK Studio. Posteriormente, o sistema poderá gerar código de aplicações mediante implementação própria, fora da responsabilidade exclusiva do editor de design.</p><p>Princípio: a IA <strong>propõe</strong>; um motor com regras <strong>valida e executa</strong>. Um template nunca será alterado definitivamente sem uma ação de edição ou versão explícita.</p></section>
+<section><h2>2. Painéis da Central RAD</h2><table><tr><th>Categoria</th><th>Conteúdo</th></tr><tr><td>Projetos</td><td>Criar projeto, selecionar template, tipo de destino, versões</td></tr><tr><td>Temas</td><td>Paletas, tipografia, espaçamentos, bordas, tokens CSS</td></tr><tr><td>Componentes</td><td>CRUD de Button, Input, Select, Form, Grid, Chart, Nav, Sidebar, ActionBar</td></tr><tr><td>Templates</td><td>CRUD, duplicar e versionar Login, Landing, Dashboard, Financeiro, Cadastro, Relatório</td></tr><tr><td>Bibliotecas</td><td>Pacotes instalados, dependências, versões, importação/exportação</td></tr><tr><td>Regras</td><td>Hierarquia permitida, eventos, slots, propriedades, responsividade</td></tr><tr><td>IA Builder</td><td>Provedor/modelo, intenção, análise, plano JSON, validação, prévia, aplicação</td></tr><tr><td>Diagnóstico</td><td>Logs, schema errors, comandos executados, auditoria de mudanças, testes</td></tr></table></section>
+<section><h2>3. Estrutura interna</h2><pre>Projeto WMK
+  └── Theme
+  └── Component Registry
+      ├── WMKForm
+      │   ├── WMKHeader
+      │   ├── WMKContent
+      │   │   ├── WMKInput
+      │   │   └── WMKSelect
+      │   └── WMKActionBar
+      │       └── WMKButton
+      └── WMKDataGrid / WMKChart
+  └── Template Registry
+      ├── Login V1
+      ├── Login V2
+      ├── Cadastro V1
+      ├── Financeiro V1
+      └── Landing V1
+  └── AI Orchestrator
+      └── Validator → Engine Commands → .wmk</pre><p>Não permitir componentes arbitrários como filhos de qualquer nó. Formulários são contêineres, campos ficam nas regiões de conteúdo, e botões de ação pertencem a barras de ações ou slots aprovados. Cada regra deve ser explícita e testável.</p></section>
+<section><h2>4. Manifesto de componente (proposta de contrato)</h2><pre>{
+  "schemaVersion": "wmk-component-v1",
+  "id": "wmk.button.primary",
+  "version": "1.0.0",
+  "name": "WMKButton",
+  "category": "actions",
+  "allowedParents": ["wmk.actionBar", "wmk.toolbar"],
+  "props": {
+    "label": {"type": "string", "required": true},
+    "state": {"type": "enum", "values": ["normal", "disabled", "loading"]}
+  },
+  "styleTokens": {
+    "background": "color.primary",
+    "font": "font.body",
+    "radius": "radius.medium"
+  }
+}</pre><p>Esse manifesto é um contrato futuro da Central RAD, não um arquivo que a versão atual reconhece diretamente. Precisa ser mapeado para IDs concretos da biblioteca visual do WMK Studio.</p></section>
+<section><h2>5. Template parametrizável</h2><pre>{
+  "schemaVersion": "wmk-template-v1",
+  "id": "wmk.login.v2",
+  "version": "2.0.0",
+  "category": "auth/login",
+  "theme": "wmk-dark",
+  "rootComponent": "wmk.form.login",
+  "slots": {
+    "header": ["wmk.brand", "wmk.title"],
+    "content": ["wmk.input.email", "wmk.input.password"],
+    "actions": ["wmk.button.primary"]
+  },
+  "parameters": {
+    "title": {"type": "string", "default": "Entrar"},
+    "showRememberMe": {"type": "boolean", "default": false}
+  }
+}</pre><p>Templates de login podem variar por estilo, disposição, responsividade ou fluxo, sem duplicar as definições-base de Input, Form e Button. Para alterar o padrão, crie uma nova versão com migração controlada para os projetos existentes.</p></section>
+<section><h2>6. Processo de geração com IA</h2><ol><li>Usuário informa: “Crie um CRUD de clientes com o template Cadastro V2”.</li><li>Central encontra a versão escolhida, tokens e componentes dependentes.</li><li>IA devolve uma estrutura limitada, por exemplo entidade Cliente, campos Nome/E-mail/CNPJ, ações Salvar/Excluir.</li><li>Validador checa IDs, hierarquia, slots, nomes, tipos, limites, dimensões e permissões.</li><li>Motor converte JSON aprovado em comandos reais da engine/MCP; captura erros e pode desfazer.</li><li>Abre um documento novo .wmk, sem sobrescrever o template original, e apresenta prévia editável.</li><li>Usuário ajusta visualmente e pode optar por salvar como novo template versionado.</li></ol><div class="note"><strong>Separação fundamental:</strong> documentos visuais/protótipos não são aplicações com banco de dados. CRUD funcional, gráficos alimentados por dados, autenticação e deploy exigem etapa de geração e execução de software com testes e segurança.</div></section>
+<section><h2>7. O que já existe no fork e o que falta</h2><table><tr><th>Recurso</th><th>Situação</th></tr><tr><td>Componentes, instâncias e variantes visuais</td><td>Presente no código original</td></tr><tr><td>Estilos, variáveis, layouts e bibliotecas</td><td>Presente no código original</td></tr><tr><td>Oito templates iniciais</td><td>Registrados em Rust</td></tr><tr><td>Engine de comandos e MCP/CLI</td><td>Código existente; CLI precisa ser compilada e validada na distribuição WMK</td></tr><tr><td>Central RAD integrada</td><td>A implementar</td></tr><tr><td>Manifestos semânticos de componentes/templates</td><td>A implementar</td></tr><tr><td>Conectores Ollama e Groq</td><td>A implementar</td></tr><tr><td>Gerador de código de aplicativos comerciais completos</td><td>Projeto futuro distinto</td></tr></table></section>
+<section><h2>8. Plano de execução por etapas</h2><ol><li><strong>RAD 0.1:</strong> estrutura de bibliotecas/JSON Schema, catálogo e testes sem IA.</li><li><strong>RAD 0.2:</strong> Theme Studio e Component Studio com seis componentes próprios, visualizados no editor.</li><li><strong>RAD 0.3:</strong> Template Studio: Login V1/V2, Cadastro V1, Landing V1; seleção e clonagem editável.</li><li><strong>RAD 0.4:</strong> validação de hierarquia/slots, versionamento e logs.</li><li><strong>RAD 0.5:</strong> compilar CLI, executar testes MCP, conectar Ollama local e gerar um login via plano JSON.</li><li><strong>RAD 0.6:</strong> Groq e outros provedores, mecanismos de timeout/429 e gestão protegida de credenciais.</li><li><strong>RAD 0.7:</strong> CRUD e dashboard de múltiplas telas, criação de novos templates pela IA com aprovação humana.</li><li><strong>RAD 1.0:</strong> estabilização, documentação ilustrada, testes automáticos e pacote público.</li></ol></section>
+<section><h2>9. Regras essenciais de segurança e manutenção</h2><ul><li>A IA nunca executa código de shell, SQL ou comandos arbitrários do modelo.</li><li>Validação determinística de JSON, versão e componentes antes de modificar o documento.</li><li>Undo e rollback de ações compostas; logs com IDs de operação.</li><li>Credenciais remotas fora do projeto, em armazenamento protegido.</li><li>Arquivos do usuário não são enviados a serviços remotos sem autorização.</li><li>Bibliotecas oficiais são imutáveis por padrão; atualizações utilizam novas versões.</li><li>Sem execução de modelos externos dentro do sandbox WebAssembly de plugins; conectores precisam de serviço autorizado.</li><li>Templates possuem testes de criação, persistência, carregamento e invariantes de layout.</li></ul></section><footer>WMK Studio — Walney Moreira Klein — walneyk@hotmail.com. Projeto original: FigCraft, ArtCraft Team e contribuidores. Documento de proposta, ainda não implementação da Central RAD.</footer></body></html>
