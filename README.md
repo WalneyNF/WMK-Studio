@@ -139,6 +139,7 @@ O curso não instala programas nem executa ações externas: é material educaci
 |---|---|
 | **[Central de manuais](manuais/index.html)** | Índice geral e navegação por todos os guias |
 | **[Academia — Aula 1: Frames e cores](manuais/academia-aula-01-frame.html)** | Criar o primeiro cartão e entender propriedades |
+| **[Manual: Design para programadores e IA](manuais/manual-design-para-programadores-e-ia.html)** | Ferramentas explicadas para quem programa e proposta de IA via Ollama/Groq |
 | **[Academia — Aula 3: alinhamento e componentes](manuais/academia-aula-03-alinhamento-componentes.html)** | Organização visual, botão, grupos e componentes |
 | **[Academia — Aula 2: textos e camadas](manuais/academia-aula-02-textos.html)** | Tipografia, posicionamento e botão visual |
 | **[Guia dos 8 templates nativos](manuais/guia-templates-iniciais.html)** | Aprenda com modelos prontos do editor |
