@@ -24,10 +24,35 @@ th{color:var(--green)}.tableWrap{overflow-x:auto;max-width:100%}.btn-sm{padding:
 form:not(.inline){display:grid;gap:11px}footer{padding:16px;color:var(--muted);font-size:12px}
 .pill{border-radius:30px;border:1px solid var(--line);padding:4px 9px;font-size:12px;color:var(--green)}
 @media(max-width:900px){.layout{grid-template-columns:1fr}aside{border-bottom:1px solid var(--line);border-right:0}.columns{grid-template-columns:1fr}header{flex-wrap:wrap}}
+
+#dbLayout[hidden],#wmkWorkspace[hidden],#wmkContent[hidden]{display:none!important}
+.wmk-tabs{display:flex;gap:10px;padding:10px 23px;border-bottom:1px solid var(--line);background:#112126}
+.wmk-tabs button{background:transparent;border-color:#456463}.wmk-tabs button.selected{background:#1a705a;border-color:#6cfbb7}
+#wmkWorkspace{padding:25px;max-width:1480px;margin:0 auto}
+.wmk-toolbar,.wmk-metadata{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}
+.wmk-toolbar{padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+.wmk-toolbar label{flex:1;min-width:200px}.wmk-toolbar input{max-width:100%}
+.wmk-columns{display:grid;grid-template-columns:245px minmax(0,1fr);gap:14px;margin-bottom:16px}
+.wmk-screens{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px;max-height:900px;overflow:auto}
+.wmk-screens button{display:block;width:100%;margin:6px 0;text-align:left}
+.wmk-screens button.selected{outline:2px solid var(--green)}
+.wmk-preview{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;min-width:0}
+#wmkStageScroll{overflow:auto;background:#243a3d;padding:20px;max-height:930px;border-radius:9px}
+#wmkStage{position:relative;flex-shrink:0;background:white;margin:auto;box-shadow:0 16px 34px #0008;overflow:hidden;border-radius:12px}
+#wmkStage [data-selected="true"]{outline:2px solid #ff42c8!important;outline-offset:1px}
+.wmk-tree{font:12px/1.4 Consolas,monospace;max-height:450px;overflow:auto}
+.wmk-tree-item{display:block;color:var(--muted);background:transparent;border:none;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:5px}
+.wmk-tree-item:hover{color:var(--green);background:#1c4040}
+#wmkDiagnostics{white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:920px){.wmk-columns{grid-template-columns:1fr}#wmkWorkspace{padding:12px}}
 </style></head><body>
 <header><div class="brand">WMK <span style="color:white">DATA STUDIO</span><small>Modelagem visual • SQLite local • Exportação para WMK App Bridge</small></div>
 <div class="row"><span class="pill">Laboratório 0.1</span><button id="btnExport" type="button">Exportar modelos JSON</button></div></header>
-<div class="layout">
+<div class="wmk-tabs" role="tablist" aria-label="Módulos do WMK Data Studio">
+<button id="tabDb" type="button" class="selected" role="tab" aria-selected="true">Banco de Dados</button>
+<button id="tabWmk" type="button" role="tab" aria-selected="false">Importação WMK Studio</button>
+</div>
+<div class="layout" id="dbLayout">
 <aside><h2>Entidades</h2><p class="muted">Tabelas SQLite do projeto</p><div id="entities"></div>
 <fieldset><legend>Nova entidade</legend><form id="createEntity">
 <label>Nome técnico<input name="name" placeholder="clientes" pattern="[A-Za-z][A-Za-z0-9_]*" required></label>
@@ -56,6 +81,36 @@ form:not(.inline){display:grid;gap:11px}footer{padding:16px;color:var(--muted);f
 </div></div>
 </div>
 </main></div>
+<section id="wmkWorkspace" hidden>
+ <div class="wmk-heading"><div><h1>Importação WMK Studio</h1>
+ <p class="muted">Abra um projeto .wmk/.figcraft e veja suas telas, camadas e componentes sem alterar o SQLite.</p></div></div>
+ <div class="wmk-toolbar">
+  <label>Arquivo de projeto <input id="wmkFile" type="file" accept=".wmk,.figcraft,.zip"></label>
+  <button id="wmkLoad" class="primary" type="button">Ler projeto WMK</button>
+  <span id="wmkStatus" class="muted">Escolha o arquivo salvo no WMK Studio.</span>
+ </div>
+ <div id="wmkContent" hidden>
+  <div class="wmk-metadata">
+   <span id="wmkProjectName" class="pill"></span>
+   <span id="wmkFormat" class="pill"></span>
+   <span id="wmkCount" class="pill"></span>
+  </div>
+  <div class="wmk-columns">
+    <aside class="wmk-screens">
+      <h2>Telas disponíveis</h2>
+      <div id="wmkScreens"></div>
+      <h3>Camadas da tela</h3><div id="wmkTree" class="wmk-tree"></div>
+    </aside>
+    <div class="wmk-preview">
+      <div class="row"><h2 id="wmkScreenName">Prévia</h2><span class="pill">Renderização aproximada</span></div>
+      <div id="wmkStageScroll"><div id="wmkStage"></div></div>
+      <p class="muted">Prévia gerada a partir dos nós, posições e estilos do document.json. Não é uma captura pixel a pixel do editor.</p>
+    </div>
+  </div>
+  <details class="panel"><summary>Miniatura original salva no arquivo</summary><p class="muted">A imagem abaixo vem diretamente do ZIP do projeto, quando disponível.</p><img id="wmkThumbnail" alt="Miniatura original do documento WMK" style="max-width:100%;max-height:450px"></details>
+  <details class="panel"><summary>Diagnóstico e componentes</summary><pre id="wmkDiagnostics"></pre></details>
+ </div>
+</section>
 <footer>WMK Studio — Walney Moreira Klein — walneyk@hotmail.com. Protótipo local sem autenticação; não expor na internet.</footer>
 <script>
 const TOKEN="__WMK_TOKEN__";
@@ -154,4 +209,4 @@ $('btnExport').onclick=async()=>{
  message('Modelo exportado em JSON');}catch(e){issue(e)}
 };
 refreshSchemas().catch(issue);
-</script></body></html>
+</script><script src="/wmk-import.js"></script></body></html>

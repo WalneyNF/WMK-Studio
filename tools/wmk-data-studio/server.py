@@ -11,6 +11,7 @@ from pathlib import Path
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlsplit, unquote
 from uuid import uuid4
+from wmk_import import parse_wmk,MAX_UPLOAD
 
 BASE = Path(__file__).resolve().parent
 TYPES = {"string": "TEXT", "email": "TEXT", "number": "REAL", "integer": "INTEGER", "boolean": "INTEGER", "date": "TEXT"}
@@ -163,6 +164,22 @@ class Handler(BaseHTTPRequestHandler):
             self.send_response(200);self.send_header("Content-Type","text/html; charset=utf-8")
             self.send_header("Content-Length",str(len(body)))
             self.send_header("Cache-Control","no-store");self.end_headers();self.wfile.write(body);return
+        if method=="GET" and path=="/wmk-import.js":
+            body=(BASE/"wmk-import.js").read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type","text/javascript; charset=utf-8")
+            self.send_header("Content-Length",str(len(body)))
+            self.send_header("Cache-Control","no-store")
+            self.end_headers();self.wfile.write(body);return
+        if method=="POST" and path=="/api/wmk/import":
+            if self.headers.get("X-WMK-Token")!=self.token:
+                return self.send_json(403,{"error":"Token local obrigatório"})
+            try:n=int(self.headers.get("Content-Length","0"))
+            except ValueError:raise ValueError("Tamanho do arquivo inválido")
+            if n<1 or n>MAX_UPLOAD:raise ValueError("Selecione um .wmk ou .figcraft com até 12 MB")
+            if self.headers.get("Content-Type")!="application/octet-stream":
+                raise ValueError("Use application/octet-stream")
+            return self.send_json(200,parse_wmk(self.rfile.read(n)))
         if method=="GET" and path=="/api/health":return self.send_json(200,{"ok":True,"engine":"sqlite","tool":"WMK Data Studio"})
         if method=="GET" and path=="/api/schema":return self.send_json(200,{"entities":self.store.entities()})
         if method=="GET" and path=="/api/export":return self.send_json(200,self.store.export())

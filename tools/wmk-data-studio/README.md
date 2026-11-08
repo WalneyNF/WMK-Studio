@@ -51,3 +51,17 @@ O adaptador App Bridge converte os tipos integer/date para string por enquanto.
 Nao usar em producao ou expor na internet sem autenticacao, autorizacao, auditoria e seguranca adequada.
 
 Creditos: Walney Moreira Klein — walneyk@hotmail.com. WMK Studio/figcraft: preservar licencas originais.
+
+## Versao 0.2 — Importacao WMK Studio
+
+Nova aba Importacao WMK Studio. Abra um arquivo .wmk ou .figcraft e clique Ler projeto WMK.
+
+A ferramenta apresenta telas Frame, arvore de componentes, posicoes, textos, cores e formas simples em HTML. Alguns vetores sao reconstruidos como poligonos SVG. Ha tambem a miniatura PNG original embutida no documento, quando disponivel.
+
+O upload tem limite de 12 MB e document.json descompactado tem limite de 10 MB. Nenhum documento importado e gravado pelo servidor, nem altera tabelas SQLite. A operacao exige token local.
+
+A previa e APROXIMADA: mascaras, Auto Layout, tipografia exata, instancias e curvas complexas podem diferir. A miniatura nao significa screenshots separados por Frame.
+
+Teste: python tools/wmk-data-studio/test_import_wmk.py
+
+Confirmado com o documento Ridgeline: 349 nos, tres telas e miniatura. HTTP import, rejeicao de ZIP invalido e teste de sintaxe JS aprovados. Comparacao visual no navegador ainda pendente.
